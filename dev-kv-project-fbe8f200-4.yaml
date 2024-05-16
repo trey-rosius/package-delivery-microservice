@@ -44,6 +44,7 @@ apps:
     DAPR_PACKAGES_DB: packagesdb
     DAPR_PUB_SUB: awssqs
     DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+    DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME: assign-package-request
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: pickup-service

@@ -34,5 +34,9 @@ def receive_package_pickup_event(event:CloudEvent):
     print(f'notification service: {event}')
     return {'success':True}
 
-
+@app.post('/api/packages/assign')
+def receive_assign_package_request(event:CloudEvent):
+    logging.info(f'Notification event: %s:' % {event.data['package_model']})
+    print(f'notification service: {event}')
+    return {'success':True}
 
