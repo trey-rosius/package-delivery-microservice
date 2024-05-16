@@ -1,0 +1,74 @@
+project: kv-project-fbe8f200-4
+apps:
+- appId: package-service
+  appPort: 5002
+  env:
+    DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/package-service/3cbd6ae7-dad4-49c9-ab89-c726b6b042da
+    DAPR_APP_ID: package-service
+    DAPR_PACKAGES_DB: packagesdb
+    DAPR_PUB_SUB: awssqs
+    DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
+    DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
+  workDir: package-service
+  command:
+  - uvicorn
+  - main:app
+  - --port
+  - "5002"
+
+- appId: user-service
+  appPort: 5001
+  env:
+    DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/user-service/c4f7e75e-b149-4ffd-852b-7ee716924d3e
+    DAPR_APP_ID: user-service
+    DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_USER_DB: userdb
+    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+    DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
+    DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
+  workDir: user-service
+  command:
+  - uvicorn
+  - main:app
+  - --port
+  - "5001"
+- appId: pickup-service
+  appPort: 5003
+  env:
+    DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/pickup-service/58cc7800-70c5-44da-8193-dd5a999a5f94
+    DAPR_APP_ID: pickup-service
+    DAPR_TARGET_APP_ID: user-service
+    DAPR_TARGET_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/user-service/c4f7e75e-b149-4ffd-852b-7ee716924d3e
+    DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_PACKAGES_DB: packagesdb
+    DAPR_PUB_SUB: awssqs
+    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+    DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
+    DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
+  workDir: pickup-service
+  command:
+  - uvicorn
+  - main:app
+  - --port
+  - "5003"
+
+- appId: notification-service
+  appPort: 5004
+  env:
+    DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/notification-service/fccdbf8b-4b33-4956-8f69-8712ae24ec61
+    DAPR_APP_ID: notification-service
+    DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_PACKAGES_DB: packagesdb
+    DAPR_PUB_SUB: awssqs
+    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+    DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
+    DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
+  workDir: notification-service
+  command:
+  - uvicorn
+  - main:app
+  - --port
+  - "5004"
+appLogDestination: ""
+
