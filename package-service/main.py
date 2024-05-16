@@ -39,7 +39,7 @@ def assign_package_request(event:CloudEvent):
             package_model = json.loads(event.data['package_model'])
             d.save_state(store_name=package_db,
                          key=str(package_model['id']),
-                         value=package_model.model_dump_json())
+                         value=json.dumps(package_model))
 
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")

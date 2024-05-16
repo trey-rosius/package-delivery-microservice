@@ -45,9 +45,10 @@ async def pick_package_event(event: CloudEvent):
                 driver_details = result.json()
 
                 package_model['deliveryAgentId'] = driver_details['id']
+                package_model['packageStatus'] = "assigned"
 
                 package_details = {
-                    "package_model": package_model.model_dump_json(),
+                    "package_model": json.dumps(package_model),
                     "event_type": "assignPackageRequest"
                 }
 
