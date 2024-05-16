@@ -71,5 +71,22 @@ apps:
   - main:app
   - --port
   - "5004"
+
+- appId: delivery-service
+  appPort: 5005
+  env:
+    DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/delivery-service/062193db-4e0d-4d05-b773-c9747152a3fd
+    DAPR_APP_ID: delivery-service
+    DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_DELIVERIES_COLLECTION: deliverydb
+    DAPR_PUB_SUB: awssqs
+    DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
+    DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
+  workDir: delivery-service
+  command:
+  - uvicorn
+  - main:app
+  - --port
+  - "5005"
 appLogDestination: ""
 
