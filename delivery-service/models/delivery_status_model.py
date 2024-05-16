@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from pydantic import BaseModel
 
@@ -14,12 +15,20 @@ class Geolocation(BaseModel):
     lat: float
     long: float
 
+class DeliveryStatus(str,Enum):
+    IN_PROGRESS = "IN_PROGRESS"
+    DELIVERED = "DELIVERED"
+    DELAYED = "DELAYED"
+
+
+
+
 
 class DeliveryStatusModel(BaseModel):
     packageId: str
     deliveryAgentId: str
     senderId: str
     destinationAddress: Address
-    status: str
+    status: DeliveryStatus
     currentPackageGeolocation: Geolocation
     createdAt: datetime

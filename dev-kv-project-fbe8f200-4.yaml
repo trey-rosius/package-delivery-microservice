@@ -79,6 +79,7 @@ apps:
     DAPR_APP_ID: delivery-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_DELIVERIES_COLLECTION: deliverydb
+    DAPR_DELIVERY_STATUS_UPDATE_TOPIC_NAME: delivery-status-update
     DAPR_PUB_SUB: awssqs
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io

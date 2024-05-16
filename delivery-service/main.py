@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 app = FastAPI()
 delivery_db = os.getenv('DAPR_DELIVERIES_COLLECTION', '')
+topic_name = os.getenv('DAPR_DELIVERY_STATUS_UPDATE_TOPIC_NAME', '')
 pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
 logging.basicConfig(level=logging.INFO)
 
@@ -41,7 +42,14 @@ def delivery_status_update(delivery_status_model: DeliveryStatusModel):
                          key=delivery_status_model.packageId,
                          value=delivery_status_model.model_dump_json())
 
-            return {"message": "package successfully created"}
+            d.publish_event(
+                pubsub_name=pubsub_name,
+                topic_name=topic_name,
+                data=delivery_status_model.model_dump_json(),
+                data_content_type='application/json',
+            )
+
+            return {"message": "delivery status updated successfully created"}
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())

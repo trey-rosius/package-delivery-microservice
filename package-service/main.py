@@ -30,7 +30,7 @@ def create_package(package_model: PackageModel):
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
 
-
+# Responds to ASSIGN_PACKAGE_REQUEST
 @app.post('/api/packages/assign')
 def assign_package_request(event:CloudEvent):
     with DaprClient() as d:
@@ -44,6 +44,27 @@ def assign_package_request(event:CloudEvent):
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")
             raise HTTPException(status_code=500, detail=err.details())
+
+# RESPONDS TO DELIVERY STATUS UPDATE EVENT
+@app.post('/api/packages/delivery-status')
+def assign_package_request(event:CloudEvent):
+    with DaprClient() as d:
+        logging.info(f'Received event: %s:' % {event.data})
+        try:
+            delivery_status_model = json.loads(event.data)
+            logging.info(f'delivery status model: {delivery_status_model}')
+            '''
+                      d.save_state(store_name=package_db,
+                         key=str(package_model['id']),
+                         value=json.dumps(package_model))
+            
+            '''
+
+
+        except grpc.RpcError as err:
+            logging.error(f"ErrorCode={err.code()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
 
 
 
