@@ -3,7 +3,7 @@ import os
 
 from dapr.clients import DaprClient
 from fastapi import FastAPI, HTTPException
-
+from models.cloud_events import CloudEvent
 import grpc
 
 import logging
@@ -30,6 +30,11 @@ def create_package(package_model: PackageModel):
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
 
+
+@app.get('/api/packages/{package_id}')
+def assign_package(event:CloudEvent):
+    with DaprClient() as d:
+        print(f"package={event.model_dump()}")
 
 @app.get('/api/packages/{package_id}')
 def send_package_pickup_request(package_id: str):

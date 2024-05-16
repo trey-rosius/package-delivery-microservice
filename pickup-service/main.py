@@ -5,7 +5,7 @@ from dapr.clients import DaprClient
 from fastapi import FastAPI, HTTPException
 import requests
 import grpc
-
+from models.cloud_events import CloudEvent
 import logging
 
 from pydantic import BaseModel
@@ -19,21 +19,11 @@ target_api_token = os.getenv('DAPR_TARGET_API_TOKEN', '')
 logging.basicConfig(level=logging.INFO)
 
 
-class CloudEvent(BaseModel):
-    datacontenttype: str
-    source: str
-    topic: str
-    pubsubname: str
-    data: dict
-    id: str
-    specversion: str
-    tracestate: str
-    type: str
-    traceid: str
+
 
 
 @app.post('/api/pickup')
-async def assign_package(event: CloudEvent):
+async def pick_package_event(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'Received event: %s:' % {event.data['package_model']})
         print(f'Received event pickup: {event}')
@@ -61,6 +51,8 @@ async def assign_package(event: CloudEvent):
                     package_model['deliveryAgentId'] = driver_details['id']
 
                     # send object back to be assigned
+
+                    # AssignPackageEvent
 
 
 
