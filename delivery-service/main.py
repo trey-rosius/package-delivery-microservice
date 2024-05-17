@@ -1,3 +1,4 @@
+import json
 import os
 
 from dapr.clients import DaprClient
@@ -41,11 +42,14 @@ def delivery_status_update(delivery_status_model: DeliveryStatusModel):
             d.save_state(store_name=delivery_db,
                          key=delivery_status_model.packageId,
                          value=delivery_status_model.model_dump_json())
+            delivery_data = {
+                "id": delivery_status_model.packageId
+            }
 
             d.publish_event(
                 pubsub_name=pubsub_name,
                 topic_name=topic_name,
-                data=delivery_status_model.model_dump_json(),
+                data=json.dumps(delivery_data),
                 data_content_type='application/json',
             )
 

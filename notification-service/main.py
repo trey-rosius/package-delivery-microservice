@@ -40,3 +40,8 @@ def receive_assign_package_request(event:CloudEvent):
     print(f'notification service: {event}')
     return {'success':True}
 
+@app.post('/api/packages/delivery-status')
+def receive_assign_package_request(event:CloudEvent):
+    logging.info(f'Notification event: %s:' % event.data['id'])
+    print(f'notification service: {event}')
+    return {'success':True}

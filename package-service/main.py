@@ -7,7 +7,7 @@ from models.cloud_events import CloudEvent
 import grpc
 
 import logging
-from models.package_model import PackageModel
+from models.package_model import PackageModel,PackageStatus
 
 app = FastAPI()
 package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
@@ -30,9 +30,10 @@ def create_package(package_model: PackageModel):
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
 
+
 # Responds to ASSIGN_PACKAGE_REQUEST
 @app.post('/api/packages/assign')
-def assign_package_request(event:CloudEvent):
+def assign_package_request(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'Received event: %s:' % {event.data['package_model']})
         try:
@@ -45,27 +46,30 @@ def assign_package_request(event:CloudEvent):
             logging.error(f"ErrorCode={err.code()}")
             raise HTTPException(status_code=500, detail=err.details())
 
+
 # RESPONDS TO DELIVERY STATUS UPDATE EVENT
 @app.post('/api/packages/delivery-status')
-def assign_package_request(event:CloudEvent):
+def delivery_status_update(event: CloudEvent):
     with DaprClient() as d:
-        logging.info(f'Received event: %s:' % {event.data})
+        logging.info(f'delivery status update event id: %s:' % event.data['id'])
         try:
-            delivery_status_model = json.loads(event.data)
-            logging.info(f'delivery status model: {delivery_status_model}')
-            '''
-                      d.save_state(store_name=package_db,
-                         key=str(package_model['id']),
-                         value=json.dumps(package_model))
-            
-            '''
+
+            package_id = event.data['id']
+            kv = d.get_state(package_db, package_id)
+            package_model = PackageModel(**json.loads(kv.data))
+
+            package_model.packageStatus = PackageStatus.IN_TRANSIT
+
+            d.save_state(store_name=package_db,
+                         key=str(package_model.id),
+                         value=package_model.model_dump_json())
+
+            return {"message": "successfully updated package status"}
 
 
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")
             raise HTTPException(status_code=500, detail=err.details())
-
-
 
 
 @app.get('/api/packages/{package_id}')
@@ -79,7 +83,7 @@ def send_package_pickup_request(package_id: str):
             package_model = PackageModel(**json.loads(kv.data))
 
             # update package status
-            package_model.packageStatus = "pick-up-request"
+            package_model.packageStatus = PackageStatus.PICK_UP_REQUEST
 
             d.save_state(store_name=package_db,
                          key=str(package_model.id),
