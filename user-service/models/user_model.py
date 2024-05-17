@@ -1,5 +1,6 @@
 
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr, UUID4
 
@@ -36,6 +37,6 @@ class UserModel(BaseModel):
     geolocation: Geolocation
     is_active: bool
     is_admin: bool
-    user_type: UserType = UserType.DELIVERY_AGENT
+    user_type: UserType
     created_at: str
-    updated_at: str
+    updated_at: Optional[str]

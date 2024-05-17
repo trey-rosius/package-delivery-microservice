@@ -1,17 +1,18 @@
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 from pydantic import BaseModel, UUID4
 
 
 class PackageStatus(str, Enum):
-    PENDING = "pending"
-    ASSIGNED = "assigned"
-    PICK_UP_REQUEST = "pick-up-request"
-    IN_TRANSIT = "in-transit"
-    DELIVERED = "delivered"
-    CANCELLED = "cancelled"
-    DAMAGED = "damaged"
+    PENDING = "PENDING"
+    ASSIGNED = "ASSIGNED"
+    PICK_UP_REQUEST = "PICK-UP-REQUEST"
+    IN_TRANSIT = "IN-TRANSIT"
+    DELIVERED = "DELIVERED"
+    CANCELLED = "CANCELLED"
+    DAMAGED = "DAMAGED"
 
 class Location(BaseModel):
     lat: float
@@ -35,6 +36,6 @@ class PackageModel(BaseModel):
     deliveryAddress: TransactionAddress
     packageStatus: PackageStatus
     senderId: str
-    deliveryAgentId: str
+    deliveryAgentId: Optional[str]
     createdAt: datetime
-    updatedAt: datetime
+    updatedAt: Optional[datetime]

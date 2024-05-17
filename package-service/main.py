@@ -31,6 +31,18 @@ def create_package(package_model: PackageModel):
             raise HTTPException(status_code=500, detail=err.details())
 
 
+@app.get('/api/packages/{package_id}')
+def get_package(package_id: str):
+    with DaprClient() as d:
+        try:
+            kv = d.get_state(package_db, package_id)
+            package_model = PackageModel(**json.loads(kv.data))
+
+            return package_model.model_dump()
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
 # Responds to ASSIGN_PACKAGE_REQUEST
 @app.post('/api/packages/assign')
 def assign_package_request(event: CloudEvent):
@@ -72,7 +84,8 @@ def delivery_status_update(event: CloudEvent):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.get('/api/packages/{package_id}')
+
+@app.get('/api/packages/send/{package_id}')
 def send_package_pickup_request(package_id: str):
     with DaprClient() as d:
         print(f"package_id={package_id}")
@@ -105,6 +118,8 @@ def send_package_pickup_request(package_id: str):
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
+
+
 
 
 @app.get('/api/packages/{userId}')
