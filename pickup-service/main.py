@@ -8,7 +8,6 @@ import grpc
 from models.cloud_events import CloudEvent
 import logging
 
-from pydantic import BaseModel
 
 app = FastAPI()
 base_url = os.getenv('DAPR_HTTP_ENDPOINT', 'http://localhost')
@@ -16,7 +15,7 @@ package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
 pubsub_name = os.getenv('DAPR_PUB_SUB', 'aws-pubsub')
 target_app_id = os.getenv('DAPR_TARGET_APP_ID', '')
 target_api_token = os.getenv('DAPR_TARGET_API_TOKEN', '')
-topic_name= os.getenv('DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME', '')
+topic_name = os.getenv('DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
 
@@ -45,7 +44,7 @@ async def pick_package_event(event: CloudEvent):
                 driver_details = result.json()
 
                 package_model['deliveryAgentId'] = driver_details['id']
-                package_model['packageStatus'] = "assigned"
+                package_model['packageStatus'] = "ASSIGNED"
 
                 package_details = {
                     "package_model": json.dumps(package_model),
@@ -58,7 +57,6 @@ async def pick_package_event(event: CloudEvent):
                     data=json.dumps(package_details),
                     data_content_type='application/json',
                 )
-
 
                 return result.json()
 

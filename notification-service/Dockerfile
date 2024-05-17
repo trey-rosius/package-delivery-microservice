@@ -12,15 +12,12 @@ FROM --platform=linux/amd64 python:${PYTHON_VERSION}-slim as base
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
 
-ENV DAPR_API_TOKEN=diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/pickup-service/24f10c6c-1ddd-43b5-b59c-358694088bd7
-ENV DAPR_APP_ID=pickup-service
-ENV DAPR_TARGET_APP_ID=user-service
-ENV DAPR_TARGET_API_TOKEN=diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/user-service/c4f7e75e-b149-4ffd-852b-7ee716924d3e
+ENV DAPR_API_TOKEN=diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/notification-service/fccdbf8b-4b33-4956-8f69-8712ae24ec61
+ENV DAPR_APP_ID=notification-service
 ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
 ENV DAPR_PACKAGES_DB=packagesdb
 ENV DAPR_PUB_SUB=awssqs
 ENV DAPR_PACKAGE_PICKUP_TOPIC_NAME=package-pickup-request
-ENV DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME=assign-package-request
 ENV DAPR_GRPC_ENDPOINT=https://grpc-prj139416.api.cloud.diagrid.io:443
 ENV DAPR_HTTP_ENDPOINT=https://http-prj139416.api.cloud.diagrid.io
 
@@ -57,7 +54,7 @@ USER appuser
 COPY . .
 
 # Expose the port that the application listens on.
-EXPOSE 5003
+EXPOSE 5004
 
 # Run the application.
-CMD uvicorn 'main:app' --host=0.0.0.0 --port=5003
+CMD uvicorn 'main:app' --host=0.0.0.0 --port=5004
