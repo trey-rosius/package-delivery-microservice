@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 from typing import Optional
 
@@ -24,12 +25,12 @@ class Address(BaseModel):
 
 
 class Geolocation(BaseModel):
-    lat: float
-    long: float
+    latitude: float
+    longitude: float
 
 
 class UserModel(BaseModel):
-    id: UUID4
+    id: str
     email: EmailStr
     username: str
     first_name: str
@@ -41,5 +42,5 @@ class UserModel(BaseModel):
     is_admin: bool
     phone_number: str
     user_type: UserType
-    created_at: str
-    updated_at: Optional[str]
+    created_at: int
+    updated_at: Optional[int]

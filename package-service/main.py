@@ -25,7 +25,7 @@ def create_package(package_model: PackageModel):
                          key=str(package_model.id),
                          value=package_model.model_dump_json())
 
-            return {"message": "package successfully created"}
+            return package_model
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
