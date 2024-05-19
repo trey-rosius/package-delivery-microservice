@@ -31,9 +31,8 @@ class CloudEvent(BaseModel):
     traceid: str
 
 
-@app.post('/api/v1/delivery-service/update-package-status')
+@app.post('/api/delivery-service/movement')
 def delivery_status_update(delivery_status_model: DeliveryStatusModel):
-
     with DaprClient() as d:
         logging.info(f'package id is:{delivery_status_model.packageId}')
 
@@ -53,12 +52,8 @@ def delivery_status_update(delivery_status_model: DeliveryStatusModel):
                 data_content_type='application/json',
             )
 
-            return {"message": "delivery status updated successfully created"}
+            return delivery_status_model.model_dump()
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
-
-
-
-    return {'success': True}
 
