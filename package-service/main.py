@@ -16,7 +16,7 @@ topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', 'package-pickup-request
 logging.basicConfig(level=logging.INFO)
 
 
-@app.post('/api/packages')
+@app.post('/v1.0/state/packages')
 def create_package(package_model: PackageModel):
     with DaprClient() as d:
         print(f"package={package_model.model_dump()}")
@@ -31,7 +31,7 @@ def create_package(package_model: PackageModel):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.get('/api/packages/{package_id}')
+@app.get('/v1.0/state/packages/{package_id}')
 def get_package(package_id: str):
     with DaprClient() as d:
         try:
@@ -44,7 +44,7 @@ def get_package(package_id: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 # Responds to ASSIGN_PACKAGE_REQUEST
-@app.post('/api/packages/assign')
+@app.post('/v1.0/subscribe/packages/assign')
 def assign_package_request(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'Received event: %s:' % {event.data['package_model']})
@@ -60,7 +60,7 @@ def assign_package_request(event: CloudEvent):
 
 
 # RESPONDS TO DELIVERY STATUS UPDATE EVENT
-@app.post('/api/packages/delivery-status')
+@app.post('/v1.0/subscribe/packages/delivery-status')
 def delivery_status_update(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'delivery status update event id: %s:' % event.data['id'])
@@ -84,8 +84,33 @@ def delivery_status_update(event: CloudEvent):
             raise HTTPException(status_code=500, detail=err.details())
 
 
+@app.post('/v1.0/state/packages/drop-off')
+def delivery_status_update(event: CloudEvent):
+    with DaprClient() as d:
+        logging.info(f'delivery status update event id: %s:' % event.data['id'])
+        try:
 
-@app.get('/api/packages/send/{package_id}')
+            package_id = event.data['id']
+            kv = d.get_state(package_db, package_id)
+            package_model = PackageModel(**json.loads(kv.data))
+
+            #update package status to delivered
+            package_model.packageStatus = PackageStatus.DELIVERED
+
+            d.save_state(store_name=package_db,
+                         key=str(package_model.id),
+                         value=package_model.model_dump_json())
+
+            return {"message": "package successfully updated"}
+
+
+        except grpc.RpcError as err:
+            logging.error(f"ErrorCode={err.code()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
+
+
+@app.get('/v1.0/publish/packages/send/{package_id}')
 def send_package_pickup_request(package_id: str):
     with DaprClient() as d:
         print(f"package_id={package_id}")
@@ -122,7 +147,7 @@ def send_package_pickup_request(package_id: str):
 
 
 
-@app.get('/api/packages/{userId}')
+@app.get('/v1.0/state/packages/{userId}')
 def get_all_packages(userId: str):
     with DaprClient() as d:
         try:

@@ -8,7 +8,6 @@ import grpc
 from models.cloud_events import CloudEvent
 import logging
 
-
 app = FastAPI()
 base_url = os.getenv('DAPR_HTTP_ENDPOINT', 'http://localhost')
 package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
@@ -19,12 +18,11 @@ topic_name = os.getenv('DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
 
-@app.post('/api/pickup')
+@app.post('/v1.0/state/pickup')
 async def pick_package_event(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'Received event: %s:' % {event.data['package_model']})
 
-        user_id: str = "8ecf99c5-99bf-465c-b144-e7d21f79cf3e"
         package_model = json.loads(event.data['package_model'])
 
         # assign package to available delivery guy.
@@ -32,8 +30,8 @@ async def pick_package_event(event: CloudEvent):
                    'content-type': 'application/json'}
         try:
             result = requests.get(
-                url='%s/api/users/{}'.format(user_id) % base_url,
-                params=user_id,
+                url='%s/v1.0/state/users/{}'.format(package_model['senderId']) % base_url,
+                params=package_model['senderId'],
                 headers=headers
             )
 

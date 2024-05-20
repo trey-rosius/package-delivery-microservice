@@ -28,19 +28,19 @@ class CloudEvent(BaseModel):
     type: str
     traceid: str
 
-@app.post('/api/pickup')
+@app.post('/v1.0/subscribe/pickup')
 def receive_package_pickup_event(event:CloudEvent):
     logging.info(f'Notification event: %s:' % {event.data['package_model']})
     print(f'notification service: {event}')
     return {'success':True}
 
-@app.post('/api/packages/assign')
+@app.post('/v1.0/subscribe/packages/assign')
 def receive_assign_package_request(event:CloudEvent):
     logging.info(f'Notification event: %s:' % {event.data['package_model']})
     print(f'notification service: {event}')
     return {'success':True}
 
-@app.post('/api/packages/delivery-status')
+@app.post('/v1.0/state/subscribe/packages/delivery-status')
 def receive_assign_package_request(event:CloudEvent):
     logging.info(f'Notification event: %s:' % event.data['id'])
     print(f'notification service: {event}')
