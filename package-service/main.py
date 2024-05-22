@@ -54,6 +54,9 @@ def assign_package_request(event: CloudEvent):
                          key=str(package_model['id']),
                          value=json.dumps(package_model))
 
+            # send event to DeliveryAgentStatus collection
+            # user updates agent as
+
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")
             raise HTTPException(status_code=500, detail=err.details())
@@ -84,8 +87,8 @@ def delivery_status_update(event: CloudEvent):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.post('/v1.0/state/packages/drop-off')
-def delivery_status_update(event: CloudEvent):
+@app.post('/v1.0/subscribe/packages/drop-off')
+def package_drop_off_event(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'delivery status update event id: %s:' % event.data['id'])
         try:
@@ -111,7 +114,7 @@ def delivery_status_update(event: CloudEvent):
 
 
 @app.get('/v1.0/publish/packages/send/{package_id}')
-def send_package_pickup_request(package_id: str):
+def package_pickup_request(package_id: str):
     with DaprClient() as d:
         print(f"package_id={package_id}")
 
@@ -147,13 +150,13 @@ def send_package_pickup_request(package_id: str):
 
 
 
-@app.get('/v1.0/state/packages/{userId}')
-def get_all_packages(userId: str):
+@app.get('/v1.0/state/packages/users/{user_id}')
+def get_all_packages(user_id: str):
     with DaprClient() as d:
         try:
             query_filter = json.dumps({
                 "filter": {
-                    "EQ": {"senderId": userId}
+                    "EQ": {"senderId": user_id}
                 },
                 "sort": [
                     {
@@ -167,6 +170,8 @@ def get_all_packages(userId: str):
                 query_filter
 
             )
+            print(f"packages are {kv}")
+
 
             for item in kv.results:
                 package_model = PackageModel(**json.loads(item.value))

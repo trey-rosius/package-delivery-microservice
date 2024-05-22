@@ -32,7 +32,7 @@ class CloudEvent(BaseModel):
     traceid: str
 
 
-@app.post('/v1.0/publish/delivery-service/dropOff')
+@app.post('/v1.0/publish/delivery-service/drop-off')
 def package_drop_off(delivery_status_model: DeliveryStatusModel):
     with DaprClient() as d:
         logging.info(f'package id is:{delivery_status_model.packageId}')
@@ -58,7 +58,7 @@ def package_drop_off(delivery_status_model: DeliveryStatusModel):
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
 
-@app.post('/v1.0/state/delivery-service/movement')
+@app.post('/v1.0/publish/delivery-service/movement')
 def delivery_status_update(delivery_status_model: DeliveryStatusModel):
     with DaprClient() as d:
         logging.info(f'package id is:{delivery_status_model.packageId}')

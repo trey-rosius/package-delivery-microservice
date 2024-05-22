@@ -33,10 +33,10 @@ def create_user_account(user_model: UserModel) -> UserModel:
 
 
 @app.get('/v1.0/state/users/{user_id}')
-def get_user_account(userId: str):
+def get_user_account(user_id: str):
     with DaprClient() as d:
         try:
-            kv = d.get_state(user_db, userId)
+            kv = d.get_state(user_db, user_id)
             user_account = UserModel(**json.loads(kv.data))
 
             return user_account.model_dump()
@@ -45,14 +45,27 @@ def get_user_account(userId: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.get('/v1.0/invoke/users/{userId}')
-def invoke_get_user_account(userId: str):
+@app.get('/v1.0/invoke/users/{user_id}')
+def invoke_get_user_account(user_id: str):
     with DaprClient() as d:
         try:
-            kv = d.get_state(user_db, userId)
+            kv = d.get_state(user_db, user_id)
             user_account = UserModel(**json.loads(kv.data))
 
             return user_account.model_dump()
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+@app.post('/v1.0/state/users/{user_id}')
+def invoke_get_user_account(user_id: str):
+    with DaprClient() as d:
+        try:
+             d.delete_state(user_db, user_id)
+
+             return {"message":"User deleted"}
+
+
+
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
