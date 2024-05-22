@@ -7,7 +7,7 @@ from models.cloud_events import CloudEvent
 import grpc
 
 import logging
-from models.package_model import PackageModel,PackageStatus
+from models.package_model import PackageModel, PackageStatus
 
 app = FastAPI()
 package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
@@ -36,12 +36,20 @@ def get_package(package_id: str):
     with DaprClient() as d:
         try:
             kv = d.get_state(package_db, package_id)
-            package_model = PackageModel(**json.loads(kv.data))
+            print(f"value of kv is {kv.data}")
+            if kv.data:
+                package_model = PackageModel(**json.loads(kv.data))
 
-            return package_model.model_dump()
+                return package_model.model_dump()
+            else:
+                return {
+                    "status_code": 204,
+                    "message": "package not found"}
+
         except grpc.RpcError as err:
-            print(f"Error={err.details()}")
+
             raise HTTPException(status_code=500, detail=err.details())
+
 
 # Responds to ASSIGN_PACKAGE_REQUEST
 @app.post('/v1.0/subscribe/packages/assign')
@@ -97,7 +105,7 @@ def package_drop_off_event(event: CloudEvent):
             kv = d.get_state(package_db, package_id)
             package_model = PackageModel(**json.loads(kv.data))
 
-            #update package status to delivered
+            # update package status to delivered
             package_model.packageStatus = PackageStatus.DELIVERED
 
             d.save_state(store_name=package_db,
@@ -110,7 +118,6 @@ def package_drop_off_event(event: CloudEvent):
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")
             raise HTTPException(status_code=500, detail=err.details())
-
 
 
 @app.get('/v1.0/publish/packages/send/{package_id}')
@@ -148,8 +155,6 @@ def package_pickup_request(package_id: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-
-
 @app.get('/v1.0/state/packages/users/{user_id}')
 def get_all_packages(user_id: str):
     with DaprClient() as d:
@@ -171,7 +176,6 @@ def get_all_packages(user_id: str):
 
             )
             print(f"packages are {kv}")
-
 
             for item in kv.results:
                 package_model = PackageModel(**json.loads(item.value))

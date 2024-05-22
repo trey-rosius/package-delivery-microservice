@@ -15,7 +15,6 @@ pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
 logging.basicConfig(level=logging.INFO)
 
 
-
 class CloudEvent(BaseModel):
     datacontenttype: str
     source: str
@@ -28,20 +27,30 @@ class CloudEvent(BaseModel):
     type: str
     traceid: str
 
-@app.post('/v1.0/subscribe/pickup')
-def receive_package_pickup_event(event:CloudEvent):
+
+@app.post('/v1.0/subscribe/packages/pickup')
+def receive_package_pickup_event(event: CloudEvent):
     logging.info(f'Notification event: %s:' % {event.data['package_model']})
     print(f'notification service: {event}')
-    return {'success':True}
+    return {'success': True}
+
+
+@app.post('/v1.0/subscribe/packages/drop-off')
+def package_drop_off_event(event: CloudEvent):
+    logging.info(f'delivery status update event id: %s:' % event.data['id'])
+    print(f'notification service: {event}')
+    return {'success': True}
+
 
 @app.post('/v1.0/subscribe/packages/assign')
-def receive_assign_package_request(event:CloudEvent):
+def receive_assign_package_request(event: CloudEvent):
     logging.info(f'Notification event: %s:' % {event.data['package_model']})
     print(f'notification service: {event}')
-    return {'success':True}
+    return {'success': True}
+
 
 @app.post('/v1.0/subscribe/packages/delivery-status')
-def receive_assign_package_request(event:CloudEvent):
+def receive_assign_package_request(event: CloudEvent):
     logging.info(f'Notification event: %s:' % event.data['id'])
     print(f'notification service: {event}')
-    return {'success':True}
+    return {'success': True}

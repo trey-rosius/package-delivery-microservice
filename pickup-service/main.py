@@ -18,7 +18,7 @@ topic_name = os.getenv('DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
 
-@app.post('/v1.0/state/pickup')
+@app.post('/v1.0/subscribe/packages/pickup')
 async def pick_package_event(event: CloudEvent):
     with DaprClient() as d:
         logging.info(f'Received event: %s:' % {event.data['package_model']})

@@ -11,10 +11,10 @@ class UserType(str, Enum):
     DELIVERY_AGENT = "DELIVERY_AGENT"
 
 
-'''
+class DELIVER_AGENT_STATUS(str, Enum):
+    BUSY="BUSY"
+    OCCUPIED="OCCUPIED"
 
-
-'''
 
 
 class Address(BaseModel):
@@ -37,6 +37,7 @@ class UserModel(BaseModel):
     last_name: str
     address: Optional[Address]
     profile_pic_url: Optional[str]
+    delivery_agent_status: Optional[DELIVER_AGENT_STATUS]
     geolocation: Geolocation
     is_active: bool
     is_admin: bool
