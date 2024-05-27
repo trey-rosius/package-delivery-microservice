@@ -10,14 +10,14 @@ import os
 from fastapi import HTTPException
 from models.user_model import UserModel
 
-user_db = os.getenv('DAPR_USER_DB', 'userdb')
+user_db = os.getenv('DAPR_USER_DB', '')
 
 app = FastAPI()
 
 logging.basicConfig(level=logging.INFO)
 
 
-@app.post('v1.0/state/users')
+@app.post('/v1.0/state/users')
 def create_user_account(user_model: UserModel) -> UserModel:
     with DaprClient() as d:
         print(f"User={user_model.model_dump()}")
@@ -56,9 +56,10 @@ def invoke_get_user_account(user_id: str):
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
 
+
 # listen for cloud events (UPDATE_DELIVERY_AGENT_STATUS)
 @app.post('/v1.0/subscribe/packages/assign')
-def update_delivery_agent_status(user_id: str,status:str):
+def update_delivery_agent_status(user_id: str, status: str):
     with DaprClient() as d:
         try:
             kv = d.get_state(user_db, user_id)
@@ -69,7 +70,7 @@ def update_delivery_agent_status(user_id: str,status:str):
                          key=str(user_account.id),
                          value=user_account.model_dump_json())
 
-            return {"message":"Delivery agent status updated successfully"}
+            return {"message": "Delivery agent status updated successfully"}
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())

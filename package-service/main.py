@@ -10,7 +10,7 @@ import logging
 from models.package_model import PackageModel, PackageStatus
 
 app = FastAPI()
-package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
+package_db = os.getenv('DAPR_PACKAGES_DB', '')
 pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
 topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', 'package-pickup-request')
 logging.basicConfig(level=logging.INFO)
@@ -159,6 +159,13 @@ def package_pickup_request(package_id: str):
 def get_all_packages(user_id: str):
     with DaprClient() as d:
         try:
+            query = '''
+                       {
+                           "filter": {
+                               "EQ": { "value.senderId": "2gsAPYsRwadD5qEwLPYFsbKs9Vc" }
+                           }
+                       }
+                       '''
             query_filter = json.dumps({
                 "filter": {
                     "EQ": {"senderId": user_id}
@@ -170,9 +177,10 @@ def get_all_packages(user_id: str):
                     }
                 ]
             })
+
             kv = d.query_state(
-                package_db,
-                query_filter
+                store_name=package_db,
+                query=query
 
             )
             print(f"packages are {kv}")

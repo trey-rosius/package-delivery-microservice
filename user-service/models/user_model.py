@@ -12,10 +12,8 @@ class UserType(str, Enum):
 
 
 class DELIVER_AGENT_STATUS(str, Enum):
-    BUSY="BUSY"
+    FREE="FREE"
     OCCUPIED="OCCUPIED"
-
-
 
 class Address(BaseModel):
     street: str

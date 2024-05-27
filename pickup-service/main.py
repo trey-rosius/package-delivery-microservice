@@ -30,7 +30,7 @@ async def pick_package_event(event: CloudEvent):
                    'content-type': 'application/json'}
         try:
             result = requests.get(
-                url='%s/v1.0/state/users/{}'.format(package_model['senderId']) % base_url,
+                url='%s/v1.0/invoke/users/{}'.format(package_model['senderId']) % base_url,
                 params=package_model['senderId'],
                 headers=headers
             )
