@@ -54,3 +54,14 @@ def receive_assign_package_request(event: CloudEvent):
     logging.info(f'Notification event: %s:' % event.data['id'])
     print(f'notification service: {event}')
     return {'success': True}
+@app.post('/v1.0/subscribe/users/account-created')
+def delivery_user_account_created(event: CloudEvent):
+    logging.info(f'Notification event: %s:' % event.data)
+    print(f'notification service: {event}')
+    return {'success': True}
+
+@app.post('/v1.0/subscribe/users/account-deleted')
+def user_account_deleted(event: CloudEvent):
+    logging.info(f'Notification event: %s:' % event.data)
+    print(f'notification service: {event}')
+    return {'success': True}

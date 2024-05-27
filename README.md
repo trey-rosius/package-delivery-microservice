@@ -8,16 +8,25 @@ Catalyst helps you abstract away the complexities of building microservice archi
 Here's a high level overview of the application's architecture.
 
 ![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/hlo1.png)
-api's.
 
 ## Microservices
 
-For this microservice api, we'll have 5 services, each of which corresponds to a Catalysts `App ID` as illustrated in the image below.
+For this application, we'll have 5 services, each of which corresponds to a Catalyst `App ID` as illustrated in the image below.
 
 ![catalyst_app_ids](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/catalyst_app_id.png)
 
-- User Service
-- Package Service
-- Pickup Service
-- Delivery Service
-- Notification Service
+## User Service
+
+### Introduction
+
+Responsible for handling User Account functionalities such as creating/updating/reading/deleting user information.
+
+This service is also responsible for invoking requests and sending/receiving events. Such as
+
+- Delivery user account created event
+- User deleted Event
+- Update delivery agent status event
+
+### Solutions Architecture for this service
+
+![user_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/user_service_architecture.png)
