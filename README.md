@@ -9,6 +9,26 @@ Here's a high level overview of the application's architecture.
 
 ![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/hlo1.png)
 
+## Prerequisites And Assumptions
+
+Before proceeding, please ensure that you have these prerequisites installed on your computer.
+
+- Python 3.8+(Python 3.10 is preferable)
+- Vscode or Pycharm(Preferably)
+
+### Installing Diagrid Catalyst
+
+```bash
+# Install Dapr client SDK
+pip3 install dapr
+
+# Install Dapr gRPC AppCallback service extension
+pip3 install dapr-ext-grpc
+
+```
+
+Please find more installation instructions here [diagrid-catalyst](https://docs.diagrid.io/catalyst/how-to-guides/connect-from-sdks)
+
 ## Microservices
 
 For this application, we'll have 5 services, each of which corresponds to a Catalyst `App ID` as illustrated in the image below.
@@ -30,3 +50,5 @@ This service is also responsible for invoking requests and sending/receiving eve
 ### Solutions Architecture for this service
 
 ![user_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/user_service_architecture.png)
+
+## Get Started
