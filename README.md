@@ -7,14 +7,14 @@ Catalyst helps you abstract away the complexities of building microservice archi
 
 Here's a high level overview of the application's architecture.
 
-![high-level-overview](../package-delivery-microservice/assets/hlo1.png)
+![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/hlo1.png)
 api's.
 
 ## Microservices
 
 For this microservice api, we'll have 5 services, each of which corresponds to a Catalysts `App ID` as illustrated in the image below.
 
-![catalyst_app_ids](../)
+![catalyst_app_ids](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/catalyst_app_id.png)
 
 - User Service
 - Package Service
