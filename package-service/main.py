@@ -23,7 +23,8 @@ def create_package(package_model: PackageModel):
         try:
             d.save_state(store_name=package_db,
                          key=str(package_model.id),
-                         value=package_model.model_dump_json())
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             return package_model
         except grpc.RpcError as err:
@@ -155,17 +156,14 @@ def package_pickup_request(package_id: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
+
+
 @app.get('/v1.0/state/packages/users/{user_id}')
-def get_all_packages(user_id: str):
+def get_all_user_packages(user_id: str):
     with DaprClient() as d:
         try:
-            query = '''
-                       {
-                           "filter": {
-                               "EQ": { "value.senderId": "2gsAPYsRwadD5qEwLPYFsbKs9Vc" }
-                           }
-                       }
-                       '''
+            user_packages = []
+
             query_filter = json.dumps({
                 "filter": {
                     "EQ": {"senderId": user_id}
@@ -179,19 +177,22 @@ def get_all_packages(user_id: str):
             })
 
             kv = d.query_state(
+
                 store_name=package_db,
-                query=query
+                query=query_filter
 
             )
             print(f"packages are {kv}")
 
             for item in kv.results:
                 package_model = PackageModel(**json.loads(item.value))
+                user_packages.append(package_model)
                 print(f"order is {package_model.model_dump()}")
+
 
             print(f"package list={kv.results}")
 
-            return {"data": "successfull"}
+            return user_packages
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
