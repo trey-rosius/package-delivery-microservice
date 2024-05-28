@@ -40,7 +40,7 @@ https://mongodb.com/
 
 Once you've created a mongo db account, create a new project with any name of your choice. I'll name mine `package_delivery`.
 
-Once created, click on the project name and proceed to the next screen.
+Once created, click on the project name and proceed to the next screen(`Clusters`).
 
 On the far right corner of the `Clusters` screen, click on `Create` to create a new cluster. See screenshot below.
 
@@ -52,7 +52,27 @@ Inside the `create cluster screen` click on the serverless tab.
 
 Next, give your instance a familiar name and then click on `Create Instance`.
 
-![serverless-instance](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/serverless_instance.png)
+![serverless-instance](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/instance_name.png)
+
+Bear in mind that you can also choose to use a shared free instance for this workshop. I used a serverless instance because i had already ran out of the free tier.
+
+## Secure the database with a username and password
+
+The next step is to create a username and password with administrative access to the instance we created above.
+
+Under the `Security` tab, click on `Database access` and create a new
+
+![add-new-db-user](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/add_new_db_user.png)
+
+Add Password
+
+![add-password](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/add_password.png)
+
+Select User Role.
+
+![add-password](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/select_role.png)
+
+Take note of your database `username` and `password`. We'll be needed them when creating a state connection in Catalyst.
 
 ## Microservices
 
