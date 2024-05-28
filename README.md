@@ -80,13 +80,16 @@ For this application, we'll have 5 services, each of which corresponds to a Cata
 
 ![catalyst_app_ids](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/catalyst_app_id.png)
 
+You can read more about Catalyst Application Identities here
+https://docs.diagrid.io/catalyst/concepts/appids
+
 ## User Service
 
 ### Introduction
 
 Responsible for handling User Account functionalities such as creating/updating/reading/deleting user information.
 
-This service is also responsible for invoking requests and sending/receiving events. Such as
+This service is also responsible for invoking requests and sending/receiving events such as
 
 - Delivery user account created event
 - User deleted Event
@@ -98,4 +101,28 @@ This service is also responsible for invoking requests and sending/receiving eve
 
 ## Get Started
 
-The first step is to create a Catalyst project, which would serve as a container for all your app ids, connections and pub/sub subscriptions services.
+### Create User-Service app id
+
+From the Catalyst Interface,click on `Create App ID`. Name your app Id `user-service`.
+
+![create_app_id](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/create_app_id.png)
+
+Once created navigate the connections screen. Let's add a state management connection for this `user-service`.
+
+### Create `userdb` connection
+
+From the `Connection` screen, click on `Create Connection`. Select `state` as the connection type.
+
+![conn_type](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/conn_type.png)
+
+Select `MongoDB` as the connection.
+
+![conn](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/conn.png)
+
+Assign Access to your `user-service` app id you created above.
+
+![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/assign_access.png)
+
+In the authentication profile tab, select username and password
+
+![username_password](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/username_password.png)
