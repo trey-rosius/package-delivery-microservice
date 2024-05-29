@@ -10,7 +10,8 @@ import logging
 from models.package_model import PackageModel, PackageStatus
 
 app = FastAPI()
-package_db = os.getenv('DAPR_PACKAGES_DB', '')
+package_db_with_outbox = os.getenv('DAPR_PACKAGES_DB_WITH_OUTBOX', '')
+package_db_no_outbox = os.getenv('DAPR_PACKAGES_DB_NO_OUTBOX', '')
 pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
 topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', 'package-pickup-request')
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +22,7 @@ def create_package(package_model: PackageModel):
     with DaprClient() as d:
         print(f"package={package_model.model_dump()}")
         try:
-            d.save_state(store_name=package_db,
+            d.save_state(store_name=package_db_no_outbox,
                          key=str(package_model.id),
                          value=package_model.model_dump_json(),
                          state_metadata={"contentType": "application/json"})
@@ -36,7 +37,7 @@ def create_package(package_model: PackageModel):
 def get_package(package_id: str):
     with DaprClient() as d:
         try:
-            kv = d.get_state(package_db, package_id)
+            kv = d.get_state(package_db_with_outbox, package_id)
             print(f"value of kv is {kv.data}")
             if kv.data:
                 package_model = PackageModel(**json.loads(kv.data))
@@ -59,13 +60,11 @@ def assign_package_request(event: CloudEvent):
         logging.info(f'Received event: %s:' % {event.data['package_model']})
         try:
             package_model = json.loads(event.data['package_model'])
-            d.save_state(store_name=package_db,
+            d.save_state(store_name=package_db_no_outbox,
                          key=str(package_model['id']),
                          value=json.dumps(package_model),
                          state_metadata={"contentType": "application/json"})
 
-            # send event to DeliveryAgentStatus collection
-            # user updates agent as
 
         except grpc.RpcError as err:
             logging.error(f"ErrorCode={err.code()}")
@@ -80,12 +79,12 @@ def delivery_status_update(event: CloudEvent):
         try:
 
             package_id = event.data['id']
-            kv = d.get_state(package_db, package_id)
+            kv = d.get_state(package_db_with_outbox, package_id)
             package_model = PackageModel(**json.loads(kv.data))
 
             package_model.packageStatus = PackageStatus.IN_TRANSIT
 
-            d.save_state(store_name=package_db,
+            d.save_state(store_name=package_db_no_outbox,
                          key=str(package_model.id),
                          value=package_model.model_dump_json(),
                          state_metadata={"contentType": "application/json"})
@@ -105,13 +104,13 @@ def package_drop_off_event(event: CloudEvent):
         try:
 
             package_id = event.data['id']
-            kv = d.get_state(package_db, package_id)
+            kv = d.get_state(package_db_no_outbox, package_id)
             package_model = PackageModel(**json.loads(kv.data))
 
             # update package status to delivered
             package_model.packageStatus = PackageStatus.DELIVERED
 
-            d.save_state(store_name=package_db,
+            d.save_state(store_name=package_db_no_outbox,
                          key=str(package_model.id),
                          value=package_model.model_dump_json(),
                          state_metadata={"contentType": "application/json"})
@@ -131,29 +130,18 @@ def package_pickup_request(package_id: str):
 
         try:
             # get complete package infor
-            kv = d.get_state(package_db, package_id)
+            kv = d.get_state(package_db_with_outbox, package_id)
             package_model = PackageModel(**json.loads(kv.data))
 
             # update package status
             package_model.packageStatus = PackageStatus.PICK_UP_REQUEST
 
-            d.save_state(store_name=package_db,
+            # pacakge
+            d.save_state(store_name=package_db_with_outbox,
                          key=str(package_model.id),
                          value=package_model.model_dump_json(),
                          state_metadata={"contentType": "application/json"})
 
-            # send package pickup request event
-            package_details = {
-                "package_model": package_model.model_dump_json(),
-                "event_type": "pickupRequest"
-            }
-
-            d.publish_event(
-                pubsub_name=pubsub_name,
-                topic_name=topic_name,
-                data=json.dumps(package_details),
-                data_content_type='application/json',
-            )
             return {"message": "successful"}
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
@@ -180,7 +168,7 @@ def get_all_user_packages(user_id: str):
 
             kv = d.query_state(
 
-                store_name=package_db,
+                store_name=package_db_no_outbox,
                 query=query_filter
 
             )

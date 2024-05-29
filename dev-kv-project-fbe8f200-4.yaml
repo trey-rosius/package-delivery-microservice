@@ -6,7 +6,8 @@ apps:
 
     DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/package-service/3cbd6ae7-dad4-49c9-ab89-c726b6b042da
     DAPR_APP_ID: package-service
-    DAPR_PACKAGES_DB: packagesdb
+    DAPR_PACKAGES_DB_WITH_OUTBOX: packagesdb
+    DAPR_PACKAGES_DB_NO_OUTBOX: packages-db-no-outbox
     DAPR_PUB_SUB: awssqs
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
