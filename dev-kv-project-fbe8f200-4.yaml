@@ -26,7 +26,7 @@ apps:
     DAPR_APP_ID: user-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_USER_DB: userdb
-    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+    DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: user-service
@@ -43,12 +43,10 @@ apps:
     DAPR_TARGET_APP_ID: user-service
     DAPR_TARGET_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/user-service/c4f7e75e-b149-4ffd-852b-7ee716924d3e
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
-    DAPR_PACKAGES_DB: packagesdb
     DAPR_PUB_SUB: awssqs
     DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
     DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME: assign-package-request
     DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
-    DAPR_USER_ACCOUNT_DELETED_TOPIC_NAME: user-account-deleted
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: pickup-service

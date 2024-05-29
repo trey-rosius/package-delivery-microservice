@@ -163,7 +163,10 @@ def get_all_user_packages(user_id: str):
                         "key": "id",
                         "order": "DESC"
                     }
-                ]
+                ],
+                "page": {
+                    "limit": 10
+                }
             })
 
             kv = d.query_state(
@@ -177,7 +180,7 @@ def get_all_user_packages(user_id: str):
             for item in kv.results:
                 package_model = PackageModel(**json.loads(item.value))
                 user_packages.append(package_model)
-                print(f"order is {package_model.model_dump()}")
+                print(f"user packages  {package_model.model_dump()}")
 
             return user_packages
         except grpc.RpcError as err:

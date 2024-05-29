@@ -8,18 +8,16 @@ import logging
 import os
 
 from fastapi import HTTPException
-from models.user_model import UserModel,UserType
+from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS
 
 user_db = os.getenv('DAPR_USER_DB', '')
 pubsub_name = os.getenv('DAPR_PUB_SUB', 'aws-pubsub')
-delivery_agent_account_topic_name = os.getenv('DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME', '')
+delivery_agent_account_created_topic = os.getenv('DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME', '')
 user_deleted_topic_name = os.getenv('DAPR_USER_ACCOUNT_DELETED_TOPIC_NAME', '')
-
 
 app = FastAPI()
 
 logging.basicConfig(level=logging.INFO)
-
 
 
 @app.post('/v1.0/state/users')
@@ -35,9 +33,9 @@ def create_user_account(user_model: UserModel) -> UserModel:
             if user_model.user_type == UserType.DELIVERY_AGENT:
                 d.publish_event(
                     pubsub_name=pubsub_name,
-                    topic_name=delivery_agent_account_topic_name,
+                    topic_name=delivery_agent_account_created_topic,
                     data=user_model.model_dump_json(),
-                    data_content_type='application/json',)
+                    data_content_type='application/json', )
                 return user_model
             else:
                 return user_model
@@ -65,14 +63,49 @@ def get_user_account(user_id: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.get('/v1.0/invoke/users/{user_id}')
-def invoke_get_user_account(user_id: str):
+@app.get('/v1.0/invoke/users')
+def get_a_free_delivery_agent():
     with DaprClient() as d:
         try:
-            kv = d.get_state(user_db, user_id)
-            user_account = UserModel(**json.loads(kv.data))
+            users = []
 
-            return user_account.model_dump()
+            query_filter = json.dumps({
+                "filter": {
+                    "AND": [
+                        {
+                            "EQ": {"user_type": UserType.DELIVERY_AGENT}
+                        },
+                        {
+                            "EQ": {"delivery_agent_status": DELIVER_AGENT_STATUS.FREE}
+                        }
+
+                    ]
+                },
+                "sort": [
+                    {
+                        "key": "id",
+                        "order": "DESC"
+                    }
+                ],
+                "page": {
+                    "limit": 1
+                }
+            })
+
+            kv = d.query_state(
+
+                store_name=user_db,
+                query=query_filter
+
+            )
+            print(f"packages are {kv}")
+
+            for item in kv.results:
+                user_model = UserModel(**json.loads(item.value))
+                users.append(user_model)
+                print(f"free delivery agents {user_model.model_dump()}")
+
+            return users
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
@@ -104,18 +137,12 @@ def delete_user_account(user_id: str):
         try:
             kv = d.get_state(user_db, user_id)
             user_account = UserModel(**json.loads(kv.data))
-            user_account.is_active=False
+            user_account.is_active = False
 
             d.save_state(store_name=user_db,
                          key=str(user_account.id),
                          value=user_account.model_dump_json(),
                          state_metadata={"contentType": "application/json"})
-
-            d.publish_event(
-                pubsub_name=pubsub_name,
-                topic_name=user_deleted_topic_name,
-                data=user_account.model_dump_json(),
-                data_content_type='application/json', )
 
             return {"message": "User account deleted successfully"}
 
