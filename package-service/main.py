@@ -61,7 +61,8 @@ def assign_package_request(event: CloudEvent):
             package_model = json.loads(event.data['package_model'])
             d.save_state(store_name=package_db,
                          key=str(package_model['id']),
-                         value=json.dumps(package_model))
+                         value=json.dumps(package_model),
+                         state_metadata={"contentType": "application/json"})
 
             # send event to DeliveryAgentStatus collection
             # user updates agent as
@@ -86,7 +87,8 @@ def delivery_status_update(event: CloudEvent):
 
             d.save_state(store_name=package_db,
                          key=str(package_model.id),
-                         value=package_model.model_dump_json())
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             return {"message": "successfully updated package status"}
 
@@ -111,7 +113,8 @@ def package_drop_off_event(event: CloudEvent):
 
             d.save_state(store_name=package_db,
                          key=str(package_model.id),
-                         value=package_model.model_dump_json())
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             return {"message": "package successfully updated"}
 
@@ -136,7 +139,8 @@ def package_pickup_request(package_id: str):
 
             d.save_state(store_name=package_db,
                          key=str(package_model.id),
-                         value=package_model.model_dump_json())
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             # send package pickup request event
             package_details = {
@@ -154,8 +158,6 @@ def package_pickup_request(package_id: str):
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
-
-
 
 
 @app.get('/v1.0/state/packages/users/{user_id}')
@@ -188,9 +190,6 @@ def get_all_user_packages(user_id: str):
                 package_model = PackageModel(**json.loads(item.value))
                 user_packages.append(package_model)
                 print(f"order is {package_model.model_dump()}")
-
-
-            print(f"package list={kv.results}")
 
             return user_packages
         except grpc.RpcError as err:

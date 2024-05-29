@@ -41,7 +41,8 @@ def package_drop_off(delivery_status_model: DeliveryStatusModel):
 
             d.save_state(store_name=delivery_db,
                          key=delivery_status_model.packageId,
-                         value=delivery_status_model.model_dump_json())
+                         value=delivery_status_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
             delivery_data = {
                 "id": delivery_status_model.packageId
             }
@@ -67,7 +68,8 @@ def delivery_status_update(delivery_status_model: DeliveryStatusModel):
 
             d.save_state(store_name=delivery_db,
                          key=delivery_status_model.packageId,
-                         value=delivery_status_model.model_dump_json())
+                         value=delivery_status_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
             delivery_data = {
                 "id": delivery_status_model.packageId
             }

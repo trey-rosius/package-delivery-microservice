@@ -29,7 +29,8 @@ def create_user_account(user_model: UserModel) -> UserModel:
         try:
             d.save_state(store_name=user_db,
                          key=str(user_model.id),
-                         value=user_model.model_dump_json())
+                         value=user_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             if user_model.user_type == UserType.DELIVERY_AGENT:
                 d.publish_event(
@@ -88,7 +89,8 @@ def update_delivery_agent_status(user_id: str, status: str):
 
             d.save_state(store_name=user_db,
                          key=str(user_account.id),
-                         value=user_account.model_dump_json())
+                         value=user_account.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             return {"message": "Delivery agent status updated successfully"}
         except grpc.RpcError as err:
@@ -106,7 +108,8 @@ def delete_user_account(user_id: str):
 
             d.save_state(store_name=user_db,
                          key=str(user_account.id),
-                         value=user_account.model_dump_json())
+                         value=user_account.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
             d.publish_event(
                 pubsub_name=pubsub_name,
