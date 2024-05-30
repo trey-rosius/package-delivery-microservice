@@ -20,6 +20,8 @@ ENV DAPR_API_TOKEN=diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-p
 ENV DAPR_APP_ID=user-service
 ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
 ENV DAPR_USER_DB=userdb
+ENV DAPR_PUB_SUB=awssqs
+ENV DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME=delivery-agent-account-created
 ENV DAPR_GRPC_ENDPOINT=https://grpc-prj139416.api.cloud.diagrid.io:443
 ENV DAPR_HTTP_ENDPOINT=https://http-prj139416.api.cloud.diagrid.io
 

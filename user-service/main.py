@@ -11,7 +11,7 @@ from fastapi import HTTPException
 from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS
 
 user_db = os.getenv('DAPR_USER_DB', '')
-pubsub_name = os.getenv('DAPR_PUB_SUB', 'aws-pubsub')
+pubsub_name = os.getenv('DAPR_PUB_SUB', '')
 delivery_agent_account_created_topic = os.getenv('DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME', '')
 user_deleted_topic_name = os.getenv('DAPR_USER_ACCOUNT_DELETED_TOPIC_NAME', '')
 
@@ -63,6 +63,54 @@ def get_user_account(user_id: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
+@app.get('/v1.0/state/users/type/{user_type}')
+def get_users_by_status(user_type: str):
+    with DaprClient() as d:
+        try:
+            users = []
+
+            query_filter = json.dumps({
+                "filter": {
+                    "AND": [
+                        {
+                            "EQ": {"is_active": True}
+                        },
+                        {
+                            "EQ": {"user_type": user_type}
+                        }
+
+                    ]
+                },
+                "sort": [
+                    {
+                        "key": "id",
+                        "order": "DESC"
+                    }
+                ],
+                "page": {
+                    "limit": 10
+                }
+            })
+
+            kv = d.query_state(
+
+                store_name=user_db,
+                query=query_filter
+
+            )
+            print(f"packages are {kv}")
+
+            for item in kv.results:
+                user_model = UserModel(**json.loads(item.value))
+                users.append(user_model)
+                print(f"free delivery agents {user_model.model_dump()}")
+
+            return users
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
+
 @app.get('/v1.0/invoke/users')
 def get_a_free_delivery_agent():
     with DaprClient() as d:
@@ -72,6 +120,9 @@ def get_a_free_delivery_agent():
             query_filter = json.dumps({
                 "filter": {
                     "AND": [
+                        {
+                            "EQ": {"is_active": True}
+                        },
                         {
                             "EQ": {"user_type": UserType.DELIVERY_AGENT}
                         },

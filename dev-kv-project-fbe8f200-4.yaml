@@ -26,6 +26,7 @@ apps:
     DAPR_APP_ID: user-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_USER_DB: userdb
+    DAPR_PUB_SUB: awssqs
     DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io

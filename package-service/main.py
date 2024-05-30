@@ -2,6 +2,7 @@ import json
 import os
 
 from dapr.clients import DaprClient
+from dapr.clients.grpc._request import TransactionalStateOperation, TransactionOperationType
 from fastapi import FastAPI, HTTPException
 from models.cloud_events import CloudEvent
 import grpc
@@ -124,7 +125,7 @@ def package_drop_off_event(event: CloudEvent):
 
 
 @app.get('/v1.0/publish/packages/send/{package_id}')
-def package_pickup_request(package_id: str):
+async def package_pickup_request(package_id: str):
     with DaprClient() as d:
         print(f"package_id={package_id}")
 
@@ -136,11 +137,20 @@ def package_pickup_request(package_id: str):
             # update package status
             package_model.packageStatus = PackageStatus.PICK_UP_REQUEST
 
-            # pacakge
-            d.save_state(store_name=package_db_with_outbox,
-                         key=str(package_model.id),
-                         value=package_model.model_dump_json(),
-                         state_metadata={"contentType": "application/json"})
+            d.execute_state_transaction(
+                store_name=package_db_with_outbox,
+                operations=[
+                    TransactionalStateOperation(
+                        operation_type=TransactionOperationType.upsert,
+                        key=str(package_model.id),
+                        data=package_model.model_dump_json(),
+
+                    )
+
+                ],
+                transactional_metadata={"contentType": "application/json"}
+
+            )
 
             return {"message": "successful"}
         except grpc.RpcError as err:
