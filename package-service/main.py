@@ -105,6 +105,7 @@ def package_status_update(event: CloudEvent):
 @app.post('/v1.0/subscribe/packages/drop-off')
 def package_drop_off_event(event: CloudEvent):
     with DaprClient() as d:
+        logging.info(f'delivery status update event : %s:' % event.model_dump_json())
         logging.info(f'delivery status update event id: %s:' % event.data['id'])
         try:
 

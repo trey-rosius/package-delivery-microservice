@@ -50,7 +50,7 @@ def receive_assign_package_request(event: CloudEvent):
 
 
 @app.post('/v1.0/subscribe/packages/delivery-status')
-def receive_assign_package_request(event: CloudEvent):
+def receive_delivery_status_request(event: CloudEvent):
     logging.info(f'Notification event: %s:' % event.model_dump_json())
     print(f'notification service: {event}')
     return {'success': True}
@@ -60,8 +60,3 @@ def delivery_user_account_created(event: CloudEvent):
     print(f'notification service: {event}')
     return {'success': True}
 
-@app.post('/v1.0/subscribe/users/account-deleted')
-def user_account_deleted(event: CloudEvent):
-    logging.info(f'Notification event: %s:' % event.data)
-    print(f'notification service: {event}')
-    return {'success': True}
