@@ -20,6 +20,7 @@ logging.basicConfig(level=logging.INFO)
 @app.post('/v1.0/subscribe/packages/pickup')
 async def pickup_package_event(event: CloudEvent):
     with DaprClient() as d:
+        logging.info(f'Received event: %s:' % {event})
         logging.info(f'Received event: %s:' % {event.data['package_model']})
 
         package_model = json.loads(event.data['package_model'])
