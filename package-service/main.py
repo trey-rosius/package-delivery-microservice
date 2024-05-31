@@ -59,7 +59,7 @@ def get_package(package_id: str):
 def assign_package_request(event: CloudEvent):
     with DaprClient() as d:
 
-        logging.info(f'Received event: %s:' % {event})
+        logging.info(f'Received event: %s:' % {event.model_dump_json()})
         logging.info(f'Received event package model: %s:' % {event.data['package_model']})
         try:
             package_model = json.loads(event.data['package_model'])
@@ -76,8 +76,10 @@ def assign_package_request(event: CloudEvent):
 
 # RESPONDS TO DELIVERY STATUS UPDATE EVENT
 @app.post('/v1.0/subscribe/packages/delivery-status')
-def delivery_status_update(event: CloudEvent):
+def package_status_update(event: CloudEvent):
     with DaprClient() as d:
+
+        logging.info(f'delivery status update event: %s:' % event.model_dump_json())
         logging.info(f'delivery status update event id: %s:' % event.data['id'])
         try:
 
