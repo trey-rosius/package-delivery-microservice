@@ -74,7 +74,35 @@ Select User Role.
 
 Take note of your database `username` and `password`. We'll be needed them when creating a state connection in Catalyst.
 
-## Microservices
+## Create a Diagrid Catalyst application
+
+From your CLI, login to diagrid Catalyst using the following command
+
+`diagrid login `
+
+Then Confirm your login was successful
+
+`diagrid whoami`
+
+### Create a Diagrid project
+
+```bash
+diagrid project create package-delivery-project
+```
+
+To set this project as the default project in the Diagrid CLI, run:
+
+```bash
+diagrid project use package-delivery-project
+```
+
+Create a new python project in pycharm, and set python version of the `venv` environment to `3.10`.
+
+The project should have a default `main.py` file and a `requirements.txt` file. Add those, if your project doesn't already have them.
+
+Let's proceed to creating `app ids` and `states` before returning to scaffold our project.
+
+## Package Delivery Microservices
 
 For this application, we'll have 5 services, each of which corresponds to a Catalyst `App ID` as illustrated in the image below.
 
@@ -103,11 +131,16 @@ This service is also responsible for invoking requests and sending/receiving eve
 
 ### Create User-Service app id
 
-From the Catalyst Interface,click on `Create App ID`. Name your app Id `user-service`.
+Within your created project,from the Catalyst Interface,click on `Create App ID`. Name your app Id `user-service`.
 
 ![create_app_id](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/create_app_id.png)
 
-Once created navigate the connections screen. Let's add a state management connection for this `user-service`.
+Once created navigate the connections screen.
+
+> N.B:
+> You'll repeat the above steps when creating the other 4 microservices App IDs.
+
+Let's add a state management connection for this `user-service`.
 
 ### Create `userdb` connection
 
@@ -152,3 +185,103 @@ In the next screen (Configure Connection), set Connection Name to `usersdb` or w
 ![configure_connection](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/configure_connection.png)
 
 Click on continue and save.
+
+> N.B
+> You'll replicate these same steps to create state management connections for `packagesdb` and `deliverydb` later on in this workshop.
+
+## Scaffold Diagrid Catalyst Project
+
+Right now, we'll have to develop our application locally, while accessing the Catalyst API's.
+
+The first step is to scaffold our project.
+
+Assuming that the project we created and made the default above is still default, run the following command.
+
+```bash
+
+diagrid dev scaffold
+
+```
+
+This command produces the file dev-<project-name>.yaml containing the app connection details for all the App IDs in the current Catalyst project. The dev config file has the following format:
+
+```yaml
+project: <project-name> # Project that this file was generated from and connects to
+apps: # List of App IDs in a project to run locally and/or create an app connection for
+  - appId: <appid> # App ID name
+    appPort: 0 # Optional: Port used by Catalyst to establish a local app connection to your code
+    env: # App environment variables necessary for connecting to the Catalyst APIs
+      DAPR_API_TOKEN: <appid-api-token>
+      DAPR_APP_ID: <appid>
+      DAPR_GRPC_ENDPOINT: <your-project-grpc-url>
+      DAPR_HTTP_ENDPOINT: <your-project-http-url>
+    workDir: <> # Work directory to run the start-up command in
+    command: [] # Start-up command to run the application
+```
+
+You can read more here https://docs.diagrid.io/catalyst/how-to-guides/develop-locally#run-multiple-with-diagrid-dev-cli
+
+Inside your requirements.txt, add these dependencies.
+
+```bash
+dapr==1.13.0
+fastapi==0.109.1
+grpcio==1.62.0
+pydantic==2.4.2
+requests==2.31.0
+uvicorn==0.23.2
+
+```
+
+Activate your python version environment using this command
+
+MacOS/Linux
+
+`source venv/bin/activate`
+
+Windows
+
+`venv/Scripts/activate.bat`
+
+Then install the dependencies in the requirements.txt file.
+
+`pip install -r requirements.txt`
+
+Here's how my `dev-<project-name>.yaml` file looks like now.
+
+Once successfully installed, run the diagrid dev state command.
+
+```yaml
+project: MY-PROJECT-NAME
+apps:
+  - appId: user-service
+    appPort: 5001
+    env:
+      DAPR_API_TOKEN: DIAGRID_TOKEN
+      DAPR_APP_ID: user-service
+      DAPR_CLIENT_TIMEOUT_SECONDS: 10
+      DAPR_USER_DB: usersdb
+      DAPR_GRPC_ENDPOINT: DIAGRID_GRPC_ENDPOINT
+      DAPR_HTTP_ENDPOINT: DIAGRID_HTTP_ENDPOINT
+    workDir: user-service
+    command:
+      - uvicorn
+      - main:app
+      - --port
+      - "5001"
+```
+
+`diagrdi dev start -f dev-<project-name>.yaml`
+
+This command starts all diagrid app ids in your project.
+At this point, we only have the user-service app ID. We'll add more app ids as we progress through the workshop.
+
+Also, bear in mind that each app id represents a service within our microservice api.
+
+- Each service has to be independently deployable.
+- Communication between services have to be done over clearly defined API's and Events.
+- Services within the microservice have to be isolated and decoupled.
+
+In order to adhere to the above microservices standards, we'll use Docker to build and deploy our microservices in a consistent and isolated manner to AWS Apprunner.
+
+Docker has a ton of advantanges, which makes it a good choice for this use case.
