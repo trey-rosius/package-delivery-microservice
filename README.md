@@ -221,6 +221,8 @@ Put in a connection name of your choice and region, i used `awssqs` and `us-east
 
 ![configure_connection_pub_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pub_sub_conn_name.png)
 
+Click on continue and save.
+
 ## Scaffold Diagrid Catalyst Project
 
 Right now, we'll have to develop our application locally, while accessing the Catalyst API's.
