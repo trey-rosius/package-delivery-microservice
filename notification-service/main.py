@@ -1,17 +1,12 @@
 import os
 
-from dapr.clients import DaprClient
-from fastapi import FastAPI, HTTPException
-
-import grpc
+from fastapi import FastAPI
 
 import logging
 
 from pydantic import BaseModel
 
 app = FastAPI()
-package_db = os.getenv('DAPR_PACKAGES_DB', 'packagesdb')
-pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
 logging.basicConfig(level=logging.INFO)
 
 
