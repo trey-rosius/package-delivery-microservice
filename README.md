@@ -131,16 +131,24 @@ Enter the `username` and `password` you created in MongoDB to access this databa
 
 Also, you'll have to add the server string and parameters.
 
+![Mongo_connection](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/mongo_conn.png)
+
 Sign into your MongoDB account and navigate to your instance.
 
 Click on the green button which reads `Connect`.
 
-![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/connect.png)
+![connect](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/connect.png)
 
 In the next screen, click on `drivers`
 
-![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/drivers.png)
+![drivers](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/drivers.png)
 
 Then copy the connection string.
 
-![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/conn_string.png)
+![connection_string](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/conn_string.png)
+
+In the next screen (Configure Connection), set Connection Name to `usersdb` or whatever you prefer and then add a collectionName = `users`.
+
+![configure_connection](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/configure_connection.png)
+
+Click on continue and save.
