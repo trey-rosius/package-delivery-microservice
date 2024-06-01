@@ -126,3 +126,21 @@ Assign Access to your `user-service` app id you created above.
 In the authentication profile tab, select username and password
 
 ![username_password](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/username_password.png)
+
+Enter the `username` and `password` you created in MongoDB to access this database.
+
+Also, you'll have to add the server string and parameters.
+
+Sign into your MongoDB account and navigate to your instance.
+
+Click on the green button which reads `Connect`.
+
+![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/connect.png)
+
+In the next screen, click on `drivers`
+
+![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/drivers.png)
+
+Then copy the connection string.
+
+![assign_access](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/conn_string.png)
