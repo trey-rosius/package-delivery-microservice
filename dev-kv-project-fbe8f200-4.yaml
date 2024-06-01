@@ -9,6 +9,7 @@ apps:
     DAPR_PACKAGES_DB: packagesdb
     DAPR_PUB_SUB: awssqs
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
+    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: package-service
@@ -62,9 +63,6 @@ apps:
     DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/notification-service/fccdbf8b-4b33-4956-8f69-8712ae24ec61
     DAPR_APP_ID: notification-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
-    DAPR_PACKAGES_DB: packagesdb
-    DAPR_PUB_SUB: awssqs
-    DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: notification-service

@@ -13,8 +13,8 @@ from models.package_model import PackageModel, PackageStatus
 app = FastAPI()
 
 package_db = os.getenv('DAPR_PACKAGES_DB', '')
-pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
-topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', 'package-pickup-request')
+pubsub_name = os.getenv('DAPR_PUB_SUB', '')
+topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
 
