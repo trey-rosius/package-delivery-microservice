@@ -433,6 +433,8 @@ The producer is our `user-service` and the consumber is a `notification-service`
 
 Create an app ID called `notification-service`. We did something similar above for the `user-service`.
 
+## Create Subscription
+
 When you're done, from your CLI, we'll create a subscription with the command below
 
 ```bash
