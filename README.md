@@ -7,6 +7,14 @@
 In this workshop, we'll be looking at how to build a serverless microservice api for a package delivery service using the Dapr Catalyst API.
 Catalyst helps you abstract away the complexities of building microservice architectures, by providing unified APIs for messaging, data and workflows, powered by open-source Dapr.
 
+We'll use AWS SQS/SNS as our message broker and MongoDB for state management. Both of these are supported by the Catalyst API's.
+
+Each service within our microservice represents a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Service(ECS).
+
+We'll then use AWS Appsync with Javascript Resolvers to create a Graphql API to unify all the app runner endpoints, while providing real-time capabilities to the API.
+
+We'll also add AWS Cognito for authentication and authorization and AWS Web Application Firewall(WAF) for rate limiting and throttling.
+
 Here's a high level overview of the application's architecture.
 
 ![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/hlo1.png)
@@ -653,3 +661,106 @@ Create those app ids, if you haven't already done so.
 ```bash
 diagrid subscription create package-pickup-request -c awssqs -s notification-service,pickup-service -t package-pickup-request -r /v1.0/subscribe/packages/pickup
 ```
+
+Now, we have to add the `package-service` configuration into our `dev-<project-name>.yaml` file.
+
+Currently, my `dev-<project-name>.yaml` file looks like this
+
+```yaml
+project: kv-project-fbe8f200-4
+apps:
+  - appId: package-service
+    appPort: 5002
+    env:
+      DAPR_API_TOKEN: <TOKEN>
+      DAPR_APP_ID: package-service
+      DAPR_PACKAGES_DB: packagesdb
+      DAPR_PUB_SUB: awssqs
+      DAPR_CLIENT_TIMEOUT_SECONDS: 10
+      DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
+      DAPR_GRPC_ENDPOINT: <ENDPOINT>
+      DAPR_HTTP_ENDPOINT: <ENDPOINT>
+    workDir: package-service
+    command:
+      - uvicorn
+      - main:app
+      - --port
+      - "5002"
+
+  - appId: user-service
+    appPort: 5001
+    env:
+      DAPR_API_TOKEN: <TOKEN>
+      DAPR_APP_ID: user-service
+      DAPR_CLIENT_TIMEOUT_SECONDS: 10
+      DAPR_USER_DB: usersdb
+      DAPR_PUB_SUB: awssqs
+      DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
+      DAPR_GRPC_ENDPOINT: <ENDPOINT>
+      DAPR_HTTP_ENDPOINT: <ENDPOINT>
+    workDir: user-service
+    command:
+      - uvicorn
+      - main:app
+      - --port
+      - "5001"
+```
+
+The `package-service` app is listening on port `5002`. The `user-service` app was listening on port `5001`.
+
+Create another folder within your project and name it `package-service`. So now there's the `user-service` folder and a `package-service` folder in your project folder.
+
+Within the `package-service` folder, create a folder called `models`.
+
+Create a `package_model.py` file within the models folder.
+
+This file contains the package model class with package fields.
+
+```py
+class PackageModel(BaseModel):
+    id: str
+    packageName: str
+    packageDescription: str
+    pickupAddress: TransactionAddress
+    deliveryAddress: TransactionAddress
+    packageStatus: PackageStatus
+    packageType: PackageType
+    deliveryMode: PackageDeliveryMode
+    senderId: str
+    deliveryAgentId: Optional[str] = None
+    createdAt: int
+    updatedAt: Optional[int] =None
+```
+
+As mentioned above, get the complete code from the github repository.
+
+### Create Package Endpoint
+
+This endpoint grabs package inputs and saves them to the `packagesdb` state.
+
+```py
+@app.post('/v1.0/state/packages')
+def create_package(package_model: PackageModel):
+    with DaprClient() as d:
+        print(f"package={package_model.model_dump()}")
+        try:
+            d.save_state(store_name=package_db,
+                         key=str(package_model.id),
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
+
+            return package_model
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+```
+
+In another variation of such an application, you might want to publish a `package-created` event and do something with the information. But for this workshop, we won't do that.
+
+## Exercise
+
+To test your knowledge and understanding of everything we've covered so far, write endpoints for
+
+- get package(`@app.get('/v1.0/state/packages/{package_id}')`)
+- Get all user packages(`@app.get('/v1.0/state/packages/users/{user_id}')`). For this endpoint, use a query with `senderId` equal to `user_id`
+- Get Packages by package status(`@app.get('/v1.0/state/packages/status/{package_status}')`)
