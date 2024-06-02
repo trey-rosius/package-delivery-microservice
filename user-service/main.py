@@ -2,12 +2,10 @@ import grpc
 import json
 
 from dapr.clients import DaprClient
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import logging
-
 import os
 
-from fastapi import HTTPException
 from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS
 
 user_db = os.getenv('DAPR_USER_DB', '')
@@ -39,11 +37,6 @@ def create_user_account(user_model: UserModel) -> UserModel:
                 return user_model
             else:
                 return user_model
-
-
-
-
-
 
         except grpc.RpcError as err:
             print(f"Error={err.details()}")

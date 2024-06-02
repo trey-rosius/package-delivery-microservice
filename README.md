@@ -1,5 +1,7 @@
 # Building Serverless Microservices with Dapr and Catalyst
 
+# Building reliable and fault tolerant distributed applications with Dapr and Diagrid Catalyst.
+
 # Building Serverless Distributed Applications with DAPR CATALYST
 
 In this workshop, we'll be looking at how to build a serverless microservice api for a package delivery service using the Dapr Catalyst API.
@@ -264,6 +266,7 @@ grpcio==1.62.0
 pydantic==2.4.2
 requests==2.31.0
 uvicorn==0.23.2
+email-validator==2.1.1
 
 ```
 
@@ -319,3 +322,210 @@ Also, bear in mind that each app id represents a service within our microservice
 In order to adhere to the above microservices standards, we'll use Docker to build and deploy our microservices in a consistent and isolated manner to AWS Apprunner.
 
 Docker has a ton of advantanges, which makes it a good choice for this use case.
+
+> N.B
+> The following sections would highlight code fragments(NOT THE COMPLETE CODE) used in creating different endpoints.
+
+> Please access the complete code on the github directory.
+
+> You'll also be required to do a couple of exercises throughout this workshop session. Don't worry, the exercises will only involve stuff we've previously covered.
+
+## Creating Endpoints
+
+We're going to be using [FastAPI](https://fastapi.tiangolo.com/) as the web application framework to build this API.
+
+### Create User Account Endpoint
+
+The first endpoint we'll create is the `createUserAccount` endpoint.
+
+This endpoint takes in valid user inputs, saves them to the state(usersdb) and then published a `delivery_agent_account_created` event if the newly created account was for a `DELIVERY AGENT`.
+
+We'll use pydantic for data validation.
+
+Because our project is going to have many different services, we'll put one each of these services within a folder.
+
+Create a folder called `user-service` and move the `main.py` and `requirements.txt` file into it.Create another folder called `models` within the `user-service` folder.
+
+Create a python file called `user_model.py` inside the `models`. We'll define all our pydantic classes within this file.
+
+Type the following code within this file.
+
+```python
+
+class UserModel(BaseModel):
+    id: str
+    email: EmailStr
+    username: str
+    first_name: str
+    last_name: str
+    address: Optional[Address]
+    profile_pic_url: Optional[str]
+    delivery_agent_status: Optional[DELIVER_AGENT_STATUS]
+    geolocation: Geolocation
+    is_active: bool
+    is_admin: bool
+    phone_number: str
+    user_type: UserType
+    created_at: int
+    updated_at: Optional[int]
+
+
+class UserType(str, Enum):
+    CUSTOMER = "CUSTOMER"
+    ADMIN = "ADMIN"
+    DELIVERY_AGENT = "DELIVERY_AGENT"
+
+
+class DELIVER_AGENT_STATUS(str, Enum):
+    FREE="FREE"
+    OCCUPIED="OCCUPIED"
+
+class Address(BaseModel):
+    street: str
+    city: str
+    zip: int
+    country: str
+
+
+class Geolocation(BaseModel):
+    latitude: float
+    longitude: float
+
+
+```
+
+Inside the `main.py` file, define the `POST` method for creating the user account and sending the event.
+
+```py
+@app.post('/v1.0/state/users')
+def create_user_account(user_model: UserModel) -> UserModel:
+    with DaprClient() as d:
+        print(f"User={user_model.model_dump()}")
+        try:
+            #save user state
+            d.save_state(store_name=user_db,
+                         key=str(user_model.id),
+                         value=user_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
+
+            # Only send event if created user is a delivery agent
+            if user_model.user_type == UserType.DELIVERY_AGENT:
+                d.publish_event(
+                    pubsub_name=pubsub_name,
+                    topic_name=delivery_agent_account_created_topic,
+                    data=user_model.model_dump_json(),
+                    data_content_type='application/json')
+                return user_model
+            else:
+                return user_model
+
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+```
+
+### Get User Account Endpoint
+
+This endpoint retrieve a user's account using a `GET` request and the user's id.
+
+```py
+@app.get('/v1.0/state/users/{user_id}')
+def get_user_account(user_id: str):
+    with DaprClient() as d:
+        try:
+            # get user item state
+            kv = d.get_state(user_db, user_id)
+            user_account = UserModel(**json.loads(kv.data))
+
+            return user_account.model_dump()
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
+```
+
+### Delete User Account
+
+Deleting a user's account actually involves updating the `is_active` attribute in the user's model from `True` to `False`.
+We won't be actually deleting user's details from the state.
+
+```py
+@app.delete('/v1.0/state/users/{user_id}')
+def delete_user_account(user_id: str):
+    with DaprClient() as d:
+        try:
+            # retrieve user account
+            kv = d.get_state(user_db, user_id)
+            user_account = UserModel(**json.loads(kv.data))
+
+            # update attribute
+            user_account.is_active = False
+
+            # save state
+            d.save_state(store_name=user_db,
+                         key=str(user_account.id),
+                         value=user_account.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
+
+            return {"message": "User account deleted successfully"}
+
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+```
+
+### GET users by status
+
+One of the use cases of this application is to be able to retrieve user's of a particular type. Say retrieve all `CUSTOMERS` OR `DELIVERY AGENTS` OR `ADMINS`.
+
+This is a great use case for queries and thankfully, Dapr Queries support MONGODB which we're using.
+
+Here's how our query looks like
+
+```py
+   query_filter = json.dumps({
+                "filter": {
+                    "AND": [
+                        {
+                            "EQ": {"is_active": True}
+                        },
+                        {
+                            "EQ": {"user_type": user_type}
+                        }
+
+                    ]
+                },
+                "sort": [
+                    {
+                        "key": "id",
+                        "order": "DESC"
+                    }
+                ],
+                "page": {
+                    "limit": 10
+                }
+            })
+
+```
+
+First, we want to make sure we're only retrieving active users, then we pass in the user type(e.g CUSTOMER).
+
+We're getting 10 results back at a time. So we set the page limit to 10. If more than 10 records are available, the query returns with a token to get the next 10 results.
+
+We'll pass in this query into the `query_state` method and get the output
+
+```py
+ kv = d.query_state(
+
+                store_name=user_db,
+                query=query_filter
+
+            )
+
+            for item in kv.results:
+                user_model = UserModel(**json.loads(item.value))
+                users.append(user_model)
+                print(f"users {user_model.model_dump()}")
+
+            return users
+```
