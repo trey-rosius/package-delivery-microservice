@@ -323,7 +323,8 @@ In order to adhere to the above microservices standards, we'll use Docker to bui
 
 Docker has a ton of advantanges, which makes it a good choice for this use case.
 
-> N.B
+# N.B
+
 > The following sections would highlight code fragments(NOT THE COMPLETE CODE) used in creating different endpoints.
 
 > Please access the complete code on the github directory.
@@ -528,4 +529,61 @@ We'll pass in this query into the `query_state` method and get the output
                 print(f"users {user_model.model_dump()}")
 
             return users
+```
+
+### GET a free Delivery Agent
+
+This method will be invoked by the `pickup-service` which we haven't created yet. But we can talk about. In order for a delivery agent to be assigned to a deliver a package, they must be `FREE` at that point in time.
+
+Using Diagrid's `Request/Reply` API, we'll synchronously invoke an endpoint inside the `user-service` that'll search and return 1 delivery agent with current delivery status as `FREE`.
+
+Let's define the query filter for this endpoint.
+
+```py
+query_filter = json.dumps({
+                "filter": {
+                    "AND": [
+                        {
+                            "EQ": {"is_active": True}
+                        },
+                        {
+                            "EQ": {"user_type": UserType.DELIVERY_AGENT}
+                        },
+                        {
+                            "EQ": {"delivery_agent_status": DELIVER_AGENT_STATUS.FREE}
+                        }
+
+                    ]
+                },
+                "sort": [
+                    {
+                        "key": "id",
+                        "order": "DESC"
+                    }
+                ],
+                "page": {
+                    "limit": 1
+                }
+            })
+```
+
+Firstly, we want to make sure the user is active, with a type of DELIVERY_AGENT and a `FREE` STATUS. All these conditions have to be true for this query to be successful.
+
+Since we only need a single delivery person, we set the page limit to 1.
+
+Then we use the `query_state` method
+
+```py
+ kv = d.query_state(
+
+                store_name=user_db,
+                query=query_filter
+
+            )
+            print(f"packages are {kv}")
+
+            for item in kv.results:
+                user_model = UserModel(**json.loads(item.value))
+                users.append(user_model)
+                print(f"free delivery agents {user_model.model_dump()}")
 ```
