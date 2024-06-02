@@ -764,3 +764,48 @@ To test your knowledge and understanding of everything we've covered so far, wri
 - get package(`@app.get('/v1.0/state/packages/{package_id}')`)
 - Get all user packages(`@app.get('/v1.0/state/packages/users/{user_id}')`). For this endpoint, use a query with `senderId` equal to `user_id`
 - Get Packages by package status(`@app.get('/v1.0/state/packages/status/{package_status}')`)
+
+### Package Pickup Endpoint
+
+`@app.get('/v1.0/publish/packages/send/{package_id}')`
+This endpoint is executed when a user demands their package be picked up by a delivery agent.
+Inside this funciton, 3 things happen.
+
+1. Firstly, we get the package id and retrieve the entire package item
+
+```py
+   kv = d.get_state(package_db, package_id)
+   package_model = PackageModel(**json.loads(kv.data))
+```
+
+2. Secondly, we update the package status from `PENDING` to `PICK_UP_REQUEST` and save.
+
+```py
+  # update package status
+            package_model.packageStatus = PackageStatus.PICK_UP_REQUEST
+
+            d.save_state(store_name=package_db,
+                         key=str(package_model.id),
+                         value=package_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
+```
+
+3. Finally, we publish a `package-pickup-request` event.
+
+```py
+            package_details = {
+                "package_model": package_model.model_dump_json(),
+                "event_type": "package-pickup-request"
+            }
+
+            d.publish_event(
+                pubsub_name=pubsub_name,
+                topic_name=topic_name,
+                data=json.dumps(package_details),
+                data_content_type='application/json',
+            )
+```
+
+If you notice, we could easily use a workflow to orchestrate these activities.
+
+Maybe you'll love to redo this endpoint as a workflow as an exercise.

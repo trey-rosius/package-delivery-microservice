@@ -130,7 +130,7 @@ def package_drop_off_event(event: CloudEvent):
 
 
 @app.get('/v1.0/publish/packages/send/{package_id}')
-async def package_pickup_request(package_id: str):
+def package_pickup_request(package_id: str):
     with DaprClient() as d:
         print(f"package_id={package_id}")
 
