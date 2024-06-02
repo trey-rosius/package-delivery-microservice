@@ -425,6 +425,28 @@ def create_user_account(user_model: UserModel) -> UserModel:
             raise HTTPException(status_code=500, detail=err.details())
 ```
 
+This event wouldn't publish, becuase we haven't created the subscription yet. Remember we created a pub/sub broker above. We need to add a producer and consumer to that broker.
+
+The producer is our `user-service` and the consumber is a `notification-service` which we haven't also created.
+
+## Exercise :
+
+Create an app ID called `notification-service`. We did something similar above for the `user-service`.
+
+When you're done, from your CLI, we'll create a subscription with the command below
+
+```bash
+diagrid subscription create delivery-agent-account-created -c awssqs -s notification-service -t delivery-agent-account-created -r  /v1.0/subscribe/users/account-created
+
+```
+
+- Topic name is `delivery-agent-account-created`
+- Subscription name is `delivery-agent-account-created`
+- subscription service is `notification service`
+- Subscription endpoint is `/v1.0/subscribe/users/account-created`
+
+![delivery_agent_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_sub.png)
+
 ### Get User Account Endpoint
 
 This endpoint retrieve a user's account using a `GET` request and the user's id.
@@ -587,3 +609,5 @@ Then we use the `query_state` method
                 users.append(user_model)
                 print(f"free delivery agents {user_model.model_dump()}")
 ```
+
+Pl
