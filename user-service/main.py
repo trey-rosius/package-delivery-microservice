@@ -142,12 +142,12 @@ def get_a_free_delivery_agent():
                 query=query_filter
 
             )
-            print(f"packages are {kv}")
+
 
             for item in kv.results:
                 user_model = UserModel(**json.loads(item.value))
                 users.append(user_model)
-                print(f"free delivery agents {user_model.model_dump()}")
+                print(f"Users {user_model.model_dump()}")
 
             return users
         except grpc.RpcError as err:

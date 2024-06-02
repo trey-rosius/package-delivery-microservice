@@ -602,12 +602,52 @@ Then we use the `query_state` method
                 query=query_filter
 
             )
-            print(f"packages are {kv}")
+
 
             for item in kv.results:
                 user_model = UserModel(**json.loads(item.value))
                 users.append(user_model)
-                print(f"free delivery agents {user_model.model_dump()}")
+                print(f"free delivery agent {user_model.model_dump()}")
 ```
 
-Pl
+Get the complete code for the `user-service` from the github repo, run the application and test each endpoint.
+
+We'll be looking at how to test each endpoint at the end of this workshop.
+
+The next service we'll create is the `package-service`.
+
+## Package Service
+
+The Package Service is responsible for all package activities within the system such as
+
+1. Creating a new package
+
+2. Updating Package Status
+
+3. Deleting a Package
+
+4. Retrieving packages based on certain criteria, such as all packages per user or based on package status and a lot more.
+
+5. Publishing package-pickup-requests events
+
+6. Subscribing to package-drop-off events
+
+7. Subscribing to package-status-update events
+
+8. Subscribing to assign-package-request events
+
+We'll start by creating an app ID called `package-service`. You can either use the Catalyst UI as we did above or run this CLI command.
+
+`diagrid appid create package-service`
+
+The next step is to create the package pickup event. This event simply notifies subscribers of the fact that, a package needs to be picked up and assigned a delivery agent.
+
+We'll look more into the consequence of this event, when we'll be talking about the `pickup-service`.
+
+Run the following command to create `package-pickup-event` with attached subscribers that happen to be the `notification-service` and `pickup-service`.
+
+Create those app ids, if you haven't already done so.
+
+```bash
+diagrid subscription create package-pickup-request -c awssqs -s notification-service,pickup-service -t package-pickup-request -r /v1.0/subscribe/packages/pickup
+```
