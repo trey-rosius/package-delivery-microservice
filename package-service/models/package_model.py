@@ -52,4 +52,4 @@ class PackageModel(BaseModel):
     senderId: str
     deliveryAgentId: Optional[str] = None
     createdAt: int
-    updatedAt: Optional[int] =None
+    updatedAt: Optional[int] = None

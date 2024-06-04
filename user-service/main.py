@@ -5,8 +5,8 @@ from dapr.clients import DaprClient
 from fastapi import FastAPI, HTTPException
 import logging
 import os
-
-from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS
+from stripe import StripeClient, StripeError
+from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS, PaymentModel
 
 user_db = os.getenv('DAPR_USER_DB', '')
 pubsub_name = os.getenv('DAPR_PUB_SUB', '')
@@ -14,7 +14,7 @@ delivery_agent_account_created_topic = os.getenv('DAPR_DELIVER_AGENT_ACCOUNT_CRE
 user_deleted_topic_name = os.getenv('DAPR_USER_ACCOUNT_DELETED_TOPIC_NAME', '')
 
 app = FastAPI()
-
+client = StripeClient("sk_test_o5XBQtVklHa7okPAhm5Ey61C00T7DHjBgB")
 logging.basicConfig(level=logging.INFO)
 
 
@@ -143,7 +143,6 @@ def get_a_free_delivery_agent():
 
             )
 
-
             for item in kv.results:
                 user_model = UserModel(**json.loads(item.value))
                 users.append(user_model)
@@ -193,3 +192,5 @@ def delete_user_account(user_id: str):
         except grpc.RpcError as err:
             print(f"Error={err.details()}")
             raise HTTPException(status_code=500, detail=err.details())
+
+

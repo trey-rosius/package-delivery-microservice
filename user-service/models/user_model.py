@@ -4,6 +4,11 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr, UUID4
 
+class PaymentModel(BaseModel):
+    id: str
+    amount: int
+    user_id: str
+    package_id: str
 
 class UserType(str, Enum):
     CUSTOMER = "CUSTOMER"

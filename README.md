@@ -809,3 +809,7 @@ Inside this funciton, 3 things happen.
 If you notice, we could easily use a workflow to orchestrate these activities.
 
 Maybe you'll love to redo this endpoint as a workflow as an exercise.
+
+## Pickup Service
+
+The next service is the pickup service
