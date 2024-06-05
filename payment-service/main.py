@@ -8,7 +8,7 @@ import grpc
 
 from datetime import timedelta
 from stripe import StripeClient, StripeError
-from models.payment_model import PaymentModel
+
 import logging
 from models.payment_model import Status, PaymentModel
 from stripe import StripeClient
@@ -188,14 +188,4 @@ def send_notification_activity(ctx, activity_input):
                              value=payment_model.model_dump_json(),
                              state_metadata={"contentType": "application/json"})
 
-        '''
-          d.publish_event(
-            pubsub_name=pubsub_name,
-            topic_name=topic_name,
-            data=json.dumps(activity_input),
-            data_content_type='application/json',
-        )
-        print(f"received notification activity: {activity_input}")
-        return "success"
-        '''
         print(f"received notification activity: {activity_input}")
