@@ -15,9 +15,9 @@ We'll then use AWS Appsync with Javascript Resolvers to create a Graphql API to 
 
 We'll also add AWS Cognito for authentication and authorization and AWS Web Application Firewall(WAF) for rate limiting and throttling.
 
-Here's a high level overview of the application's architecture.
+Application's solutions architecture.
 
-![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/hlo1.png)
+![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pds3.png)
 
 ## Prerequisites And Assumptions
 
