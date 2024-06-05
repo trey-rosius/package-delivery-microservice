@@ -63,7 +63,7 @@ def confirm_payment_intent(payment_intent: str):
 
 @app.get('/v1.0/payments/{payment_intent}/cancel')
 def cancel_payment_intent(payment_intent: str):
-    with DaprClient as d:
+    with DaprClient() as d:
         print(f'cancel payment intent: Received input: {payment_intent}.')
         kv = d.get_state(payments_db, payment_intent)
         print(f"value of kv is {kv.data}")
@@ -80,7 +80,7 @@ def cancel_payment_intent(payment_intent: str):
                              value=payment_model.model_dump_json(),
                              state_metadata={"contentType": "application/json"})
 
-                d.raise_workflow_event(instance_id=payment_model.id, workflow_component='dapr',
+                d.raise_workflow_event(instance_id=payment_model.instance_id, workflow_component='dapr',
                                        event_name="approve_payment", event_data={'approval': False})
                 return {"status": 'cancelled'}
 
@@ -182,10 +182,10 @@ def send_notification_activity(ctx, activity_input):
         if kv.data:
             payment_model = PaymentModel(**json.loads(kv.data))
             payment_model.status = activity_input['status']
-            if activity_input['status'] == Status.FAILED:
-                d.save_state(store_name=payments_db,
-                             key=payment_model.id,
-                             value=payment_model.model_dump_json(),
-                             state_metadata={"contentType": "application/json"})
+            d.save_state(store_name=payments_db,
+                         key=payment_model.id,
+                         value=payment_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
 
         print(f"received notification activity: {activity_input}")
+        return "success"
