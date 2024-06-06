@@ -29,7 +29,7 @@ wf_client = wf.DaprWorkflowClient()
 wfr.start()
 
 
-@app.get('/v1.0/payments/{payment_intent}/confirm')
+@app.post('/v1.0/payments/{payment_intent}/confirm')
 def confirm_payment_intent(payment_intent: str):
     with DaprClient() as d:
 
@@ -61,7 +61,7 @@ def confirm_payment_intent(payment_intent: str):
             raise HTTPException(status_code=500, detail=err.details())
 
 
-@app.get('/v1.0/payments/{payment_intent}/cancel')
+@app.post('/v1.0/payments/{payment_intent}/cancel')
 def cancel_payment_intent(payment_intent: str):
     with DaprClient() as d:
         print(f'cancel payment intent: Received input: {payment_intent}.')
