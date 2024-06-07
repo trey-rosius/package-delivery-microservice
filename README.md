@@ -1,21 +1,48 @@
-# Building Serverless Microservices with Dapr and Catalyst
+## Package Delivery Service API
 
-# Building reliable and fault tolerant distributed applications with Dapr and Diagrid Catalyst.
+This project is a Free to Use and Open Source under the MIT license, made in accordance with these [rules](https://22146261.fs1.hubspotusercontent-na1.net/hubfs/22146261/Catalyst%20Hackathon/Diagrid%20Catalyst%20AWS%20Hackathon%20Rules.docx.pdf).
 
-# Building Serverless Distributed Applications with DAPR CATALYST
+It's a submission for the [Diagrid AWS Hackathon](https://www.diagrid.io/blog/innovate-and-win-its-the-diagrid-catalyst-aws-hackathon)
 
-In this workshop, we'll be looking at how to build a serverless microservice api for a package delivery service using the Dapr Catalyst API.
-Catalyst helps you abstract away the complexities of building microservice architectures, by providing unified APIs for messaging, data and workflows, powered by open-source Dapr.
+## Project Overview
 
-We'll use AWS SQS/SNS as our message broker and MongoDB for state management. Both of these are supported by the Catalyst API's.
+### Problem Statement
 
-Each service within our microservice represents a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Service(ECS).
+Covid came and went. This led to a huge lifestyle change in both individuals and organizations. Ordering stuff especially food, from home was and still is the norm.
 
-We'll then use AWS Appsync with Javascript Resolvers to create a Graphql API to unify all the app runner endpoints, while providing real-time capabilities to the API.
+Where i live,the concept of online delivery is still a thing of the past. It's incredibly difficult to reliably order stuff online and have it delivered to you without a ton of back and forth.
 
-We'll also add AWS Cognito for authentication and authorization and AWS Web Application Firewall(WAF) for rate limiting and throttling.
+One of the main difficulty is the unknown wait times. You place an order, give your address and then pray to God. Because 7 times out of 10, the delivery agent gets your location mixed up and delivers your food elsewhere.
 
-Application's solutions architecture.
+Most times, they have to do soo many deliveries that your food gets cold before it arrives.
+
+You get zero observability into what location your food and delivery agent are exactly. How much time you have to wait or how long it'll take for the food to arrive.
+
+The entire system is like most serverless apps. A black box. Zero insights into the system's internal functionality.
+
+You just have to sit and pray everything goes smoothly and your meal arrives.
+
+Don't get me started with "sending packages across the city".
+
+## Proposed Proof of Concept
+
+In this workshop, we'll be looking at how to build a serverless microservice api for a realtime package delivery service using Diagrid's Catalyst API.
+
+Catalyst helps you abstract away the complexities of building microservice architectures, by providing unified APIs for messaging, data and workflows, powered by open-source [Dapr](https://dapr.io/).
+
+For Application decoupling and isolation, we will use AWS SQS/SNS as a message broker and MongoDB for state management. Both of which are supported by the Catalyst API's.
+
+For synchronous communication between services, we will employ the Dapr request/response API, which will be elaborated on during the workshop.
+
+Additionally, we will orchestrate payments within the API using Dapr Workflows.
+
+Each microservice will correspond to a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Service (ECS).
+
+Finally, we will implement AWS AppSync with JavaScript Resolvers, Cognito, and AWS WAF (Web Application Firewall) to create a GraphQL API. This setup will unify all AppRunner endpoints, offering real-time capabilities, security, authorization, rate limiting, and throttling.
+
+The Appsync solution can be found [here](https://github.com/trey-rosius/cdk-package-delivery-microservice)
+
+## Solutions architecture.
 
 ![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pds3.png)
 
