@@ -389,13 +389,15 @@ This endpoint takes in valid user inputs, saves them to the state(usersdb) and t
 
 We'll use pydantic for data validation.
 
-Because our project is going to have many different services, we'll put one each of these services within a folder.
+Because our project is going to have many different services, we'll create each of these services within a separate folder.
 
-Create a folder called `user-service` and move the `main.py` and `requirements.txt` file into it.Create another folder called `models` within the `user-service` folder.
+Create a folder called `user-service` and move the `main.py` and `requirements.txt` file into it.
+
+Create another folder called `models` within the `user-service` folder.
 
 Create a python file called `user_model.py` inside the `models`. We'll define all our pydantic classes within this file.
 
-Type the following code within this file.
+Type the following code into this file.
 
 ```python
 
@@ -471,9 +473,11 @@ def create_user_account(user_model: UserModel) -> UserModel:
             raise HTTPException(status_code=500, detail=err.details())
 ```
 
-This event wouldn't publish, becuase we haven't created the subscription yet. Remember we created a pub/sub broker above. We need to add a producer and consumer to that broker.
+Before proceeding, we need to create a subscription. Remember we created a pub/sub broker above called `awssqs`. We need to add a producer and consumer to that broker.
 
 The producer is our `user-service` and the consumber is a `notification-service` which we haven't also created.
+
+![Deliver-agent-account-created](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_agent_account_created.png)
 
 ## Exercise :
 
