@@ -63,7 +63,7 @@ https://github.com/trey-rosius/package-delivery-microservice/assets/29162353/de1
 
 ## Solutions architecture.
 
-![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/images/solutions_architecture.svg)
+![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/solutions_architecture.svg)
 
 ## Project Description
 
