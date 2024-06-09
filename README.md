@@ -483,7 +483,7 @@ For event publishing, we'll use dapr's `publish_event` and pass in the required 
 
 But we haven't created a subscription yet. Remember, we created a pub/sub broker above called `awssqs`. We need to add a producer and consumer to that broker.
 
-The producer is our `user-service` and the consumber is a `notification-service` which we haven't also created.
+The producer is our `user-service` and the consumer is a `notification-service` which we haven't also created.
 
 ![Deliver-agent-account-created](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_agent_account_created.png)
 
@@ -884,3 +884,71 @@ Maybe you'll love to redo this endpoint as a workflow, for an exercise.
 ![pickup_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pickup_service.png)
 
 The next service is the pickup service. This service is invoked by the `package-pickup-request` event.
+
+When it receives the `package-pickup-request` event, we synchronously invoke the `get free delivery agent` endpoint in the `user-service` using Catalysts `Request/Response` API.
+
+When the results are returned, 2 fields of the package item get updated.
+
+The delivery agent id and the package status.
+
+The package status is set to `ASSIGNED`.
+
+This record has to be persisted in the package state store. This functionality can't be done inside the `pickup-service`. We don't share state. So we send an event alongside the updated package payload back to the package service and it does the update.
+
+```py
+@app.post('/v1.0/subscribe/packages/pickup')
+async def pickup_package_event(event: CloudEvent):
+    with DaprClient() as d:
+        logging.info(f'Received event: %s:' % {event.model_dump_json()})
+        logging.info(f'Received event: %s:' % {event.data['package_model']})
+
+        package_model = json.loads(event.data['package_model'])
+
+        # assign package to available delivery guy.
+        headers = {'dapr-app-id': target_app_id, 'dapr-api-token': target_api_token,
+                   'content-type': 'application/json'}
+        try:
+            result = requests.get(
+                url='%s/v1.0/invoke/users' % base_url,
+                headers=headers
+            )
+
+            if result.ok:
+                logging.info('Invocation successful with status code: %s' %
+                             result.status_code)
+                print("result is %s" % result.json())
+                driver_details = result.json()
+
+                package_model['deliveryAgentId'] = driver_details[0]['id']
+                package_model['packageStatus'] = "ASSIGNED"
+
+                package_details = {
+                    "package_model": json.dumps(package_model),
+                    "event_type": "assignPackageRequest"
+                }
+
+                d.publish_event(
+                    pubsub_name=pubsub_name,
+                    topic_name=topic_name,
+                    data=json.dumps(package_details),
+                    data_content_type='application/json',
+                )
+
+                return result.json()
+
+            else:
+                logging.error(
+                    'Error occurred while invoking App ID: %s' % result.reason)
+                raise HTTPException(status_code=500, detail=result.reason)
+
+        except grpc.RpcError as err:
+            logging.error(f"ErrorCode={err.code()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
+```
+
+## Delivery Service
+
+## Solutions Architecture
+
+![pickup_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_service_arch.png)
