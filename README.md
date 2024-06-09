@@ -473,7 +473,15 @@ def create_user_account(user_model: UserModel) -> UserModel:
             raise HTTPException(status_code=500, detail=err.details())
 ```
 
-Before proceeding, we need to create a subscription. Remember we created a pub/sub broker above called `awssqs`. We need to add a producer and consumer to that broker.
+To save a state in the state store, we use dapr's `save_state` method, passing in the store name, key and value and then the `state_metadata`.
+
+`state_metadata={"contentType": "application/json"}` ensures that state values are saved as json object and not strings which are default.
+
+![configure_connection_pub_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/user_object.png)
+
+For event publishing, we'll use dapr's `publish_event` and pass in the required parameters.
+
+But we haven't created a subscription yet. Remember, we created a pub/sub broker above called `awssqs`. We need to add a producer and consumer to that broker.
 
 The producer is our `user-service` and the consumber is a `notification-service` which we haven't also created.
 
@@ -481,7 +489,9 @@ The producer is our `user-service` and the consumber is a `notification-service`
 
 ## Exercise :
 
-Create an app ID called `notification-service`. We did something similar above for the `user-service`.
+Create an app ID called `notification-service`. We did something similar above for the `user-service`. Remember you can also create app ids using commands from the CLI.
+
+`diagrid appid create notification-service`
 
 ## Create Subscription
 
@@ -494,14 +504,16 @@ diagrid subscription create delivery-agent-account-created -c awssqs -s notifica
 
 - Topic name is `delivery-agent-account-created`
 - Subscription name is `delivery-agent-account-created`
-- subscription service is `notification service`
+- Subscription service is `notification service`
 - Subscription endpoint is `/v1.0/subscribe/users/account-created`
 
 ![delivery_agent_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_sub.png)
 
 ### Get User Account Endpoint
 
-This endpoint retrieve a user's account using a `GET` request and the user's id.
+Retrieves a user's account using a `GET` request and the user's id.
+
+We'll use dapr's `get_state` method while passing in the state store name and item id to retrieve.
 
 ```py
 @app.get('/v1.0/state/users/{user_id}')
@@ -553,7 +565,7 @@ def delete_user_account(user_id: str):
 
 One of the use cases of this application is to be able to retrieve user's of a particular type. Say retrieve all `CUSTOMERS` OR `DELIVERY AGENTS` OR `ADMINS`.
 
-This is a great use case for queries and thankfully, Dapr Queries support MONGODB which we're using.
+This is a great use case for queries and thankfully, Dapr Queries support MONGODB state store.
 
 Here's how our query looks like
 
@@ -583,9 +595,15 @@ Here's how our query looks like
 
 ```
 
-First, we want to make sure we're only retrieving active users, then we pass in the user type(e.g CUSTOMER).
+First, we want to make sure we're only retrieving active users.
 
-We're getting 10 results back at a time. So we set the page limit to 10. If more than 10 records are available, the query returns with a token to get the next 10 results.
+`"EQ": {"is_active": True}`
+
+Then, we pass in the user type(e.g CUSTOMER).
+
+`"EQ": {"user_type": user_type}`
+
+We set the page limit to 10, because we need to retrieve results in batches of 10. If more than 10 records are available, the query returns with a token to get the next batch.
 
 We'll pass in this query into the `query_state` method and get the output
 
@@ -607,7 +625,7 @@ We'll pass in this query into the `query_state` method and get the output
 
 ### GET a free Delivery Agent
 
-This method will be invoked by the `pickup-service` which we haven't created yet. But we can talk about. In order for a delivery agent to be assigned to a deliver a package, they must be `FREE` at that point in time.
+This method will be invoked by the `pickup-service` which we haven't created yet. But we can talk about. In order for a delivery agent to be assigned a package, they must be `FREE` at that point in time.
 
 Using Diagrid's `Request/Reply` API, we'll synchronously invoke an endpoint inside the `user-service` that'll search and return 1 delivery agent with current delivery status as `FREE`.
 
@@ -641,11 +659,13 @@ query_filter = json.dumps({
             })
 ```
 
-Firstly, we want to make sure the user is active, with a type of DELIVERY_AGENT and a `FREE` STATUS. All these conditions have to be true for this query to be successful.
+Firstly, we want to make sure the user is active, and is of type of `DELIVERY_AGENT` and has a `Delivery_status` as `FREE`.
+
+All these conditions have to be true for this query to be successful.
 
 Since we only need a single delivery person, we set the page limit to 1.
 
-Then we use the `query_state` method
+Using the `query_state` method
 
 ```py
  kv = d.query_state(
@@ -663,8 +683,6 @@ Then we use the `query_state` method
 ```
 
 Get the complete code for the `user-service` from the github repo, run the application and test each endpoint.
-
-We'll be looking at how to test each endpoint at the end of this workshop.
 
 The next service we'll create is the `package-service`.
 
