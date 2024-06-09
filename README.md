@@ -283,11 +283,11 @@ Click on continue and save.
 
 ## Scaffold Diagrid Catalyst Project
 
-Right now, we'll have to develop our application locally, while accessing the Catalyst API's.
+Right now, we'll have to develop the app locally, while accessing the Catalyst API's.
 
-The first step is to scaffold our project.
+The first step is to scaffold the project.
 
-Assuming that the project we created and made the default above is still default, run the following command.
+From the CLI run the following command
 
 ```bash
 
@@ -328,11 +328,11 @@ email-validator==2.1.1
 
 Activate your python version environment using this command
 
-MacOS/Linux
+For MacOS/Linux
 
 `source venv/bin/activate`
 
-Windows
+For Windows
 
 `venv/Scripts/activate.bat`
 
@@ -342,7 +342,7 @@ Then install the dependencies in the requirements.txt file.
 
 Here's how my `dev-<project-name>.yaml` file looks like now.
 
-Once successfully installed, run the diagrid dev state command.
+Once successfully installed, run the `diagrid dev start` command.
 
 ```yaml
 project: MY-PROJECT-NAME
@@ -367,23 +367,13 @@ apps:
 `diagrdi dev start -f dev-<project-name>.yaml`
 
 This command starts all diagrid app ids in your project.
-At this point, we only have the user-service app ID. We'll add more app ids as we progress through the workshop.
-
-Also, bear in mind that each app id represents a service within our microservice api.
-
-- Each service has to be independently deployable.
-- Communication between services have to be done over clearly defined API's and Events.
-- Services within the microservice have to be isolated and decoupled.
-
-In order to adhere to the above microservices standards, we'll use Docker to build and deploy our microservices in a consistent and isolated manner to AWS Apprunner.
-
-Docker has a ton of advantanges, which makes it a good choice for this use case.
+At this point, we only have the `user-service` app Id. We'll add more app ids as we progress through the workshop.
 
 # N.B
 
 > The following sections would highlight code fragments(NOT THE COMPLETE CODE) used in creating different endpoints.
 
-> Please access the complete code on the github directory.
+> Please access the complete code on the [github directory](https://github.com/trey-rosius/package-delivery-microservice/tree/master).
 
 > You'll also be required to do a couple of exercises throughout this workshop session. Don't worry, the exercises will only involve stuff we've previously covered.
 
