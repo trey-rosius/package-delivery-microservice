@@ -38,13 +38,34 @@ Additionally, we will orchestrate payments within the API using Dapr Workflows.
 
 Each microservice will correspond to a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Service (ECS).
 
-Finally, we will implement AWS AppSync with JavaScript Resolvers, Cognito, and AWS WAF (Web Application Firewall) to create a GraphQL API. This setup will unify all AppRunner endpoints, offering real-time capabilities, security, authorization, rate limiting, and throttling.
+Finally, we'll implement a Graphql API using AWS AppSync with JavaScript Resolvers, Cognito, and AWS WAF (Web Application Firewall).
 
-The Appsync solution can be found [here](https://github.com/trey-rosius/cdk-package-delivery-microservice)
+This setup will unify all AppRunner endpoints, offering real-time capabilities, security, authorization, rate limiting, and throttling.
+
+The working Graphql API and how to deploy it can be found [here](https://github.com/trey-rosius/cdk-package-delivery-microservice)
+
+## Frontend Application
+
+[Github](https://github.com/trey-rosius/Package-Delivery-Mobile-App)
+I've built a barebones mobile application to visually illustrate how to consume the GraphQL endpoint. Also, i try to illustrate the realtime aspect of the api, by showing a location marker folloing a polyline, moving across a map.
+Package location(longitude and latitude) updates are done every 5 seconds.
+
+PL == Package Location(updates based on package movement)
+DL == Destination Location(Never updates)
+
+```
+Destination location - Package location = Distance Left
+```
+
+Package Estimated time of arrival(ETA) can be calculated from Distance Left
+
+The repository can be found here, with screenshots and a video of how it works.
 
 ## Solutions architecture.
 
 ![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pds3.png)
+
+## Project Description
 
 ## Prerequisites And Assumptions
 
