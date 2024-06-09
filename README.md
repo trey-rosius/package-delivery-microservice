@@ -193,10 +193,10 @@ Within your created project,from the Catalyst Interface,click on `Create App ID`
 
 ![create_app_id](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/create_app_id.png)
 
-Once created navigate the connections screen.
+Once created navigate to the connections screen.
 
 > N.B:
-> You'll repeat the above steps when creating the other 4 microservices App IDs.
+> You'll repeat the above steps when creating the rest of the App IDs.
 
 ## State Management
 
@@ -247,19 +247,19 @@ In the next screen (Configure Connection), set Connection Name to `usersdb` or w
 Click on continue and save.
 
 > N.B
-> You'll replicate these same steps to create state management connections for `packagesdb` and `deliverydb` later on in this workshop.
+> You'll replicate these same steps to create state management connections for `packagesdb`, `deliverydb` and `paymentsdb` later on.
 
 ## Pub/Sub Connection
 
-Communication between services in our application will be done through events. For our use case, we'll be using AWS SQS/SNS as the message brokers for this application.
+Communication between services in our application will be done through events. We'll be using AWS SQS/SNS as the message brokers for this application.
 
-Log into your AWS application and create credentials for the AWS CLI.
+Log into your AWS Console and create credentials for the AWS CLI.
 
 Configure your CLI using the command
 
 `aws configure`
 
-and then passing in the ACCESS_KEY_ID and ACCESS_SECRET when asked.
+and then pass in the ACCESS_KEY_ID and ACCESS_SECRET when asked.
 
 Follow this visual guide incase you need assistance. [CREATE IAM USER](https://www.educloud.academy/content/aee6b0ae-fc22-45db-a497-4b70b4c4cd6e/eb3f129e-b9d7-499a-9467-bd4480a18c7c/598a522a-fd94-46a6-92b3-1d6f1d90ea28/)
 
