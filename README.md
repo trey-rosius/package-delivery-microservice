@@ -59,11 +59,11 @@ Package Estimated time of arrival(ETA) can be calculated from Distance Left
 
 https://github.com/trey-rosius/package-delivery-microservice/assets/29162353/de1bd1c6-e943-404c-b4de-3dc88d6a94fd
 
-![high-level-overview](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/images/package_details.png)
+![package-details](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/images/package_details.png)
 
 ## Solutions architecture.
 
-![high-level-overview](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pds3.png)
+![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/images/solutions_architecture.svg)
 
 ## Project Description
 
