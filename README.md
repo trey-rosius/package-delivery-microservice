@@ -263,7 +263,7 @@ and then pass in the ACCESS_KEY_ID and ACCESS_SECRET when asked.
 
 Follow this visual guide incase you need assistance. [CREATE IAM USER](https://www.educloud.academy/content/aee6b0ae-fc22-45db-a497-4b70b4c4cd6e/eb3f129e-b9d7-499a-9467-bd4480a18c7c/598a522a-fd94-46a6-92b3-1d6f1d90ea28/)
 
-Navigate to your Catalyst Console, click on connections, select `pubsub` as connection type and `AWS SNS/SQS` as Connection.
+Navigate to the Diagrid Catalyst Console, click on connections, select `pubsub` as connection type and `AWS SNS/SQS` as Connection.
 
 ![configure_connection_pub_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pub_sub.png)
 
@@ -271,7 +271,7 @@ Click on Next.
 
 Check the `Select All ` Checkbox because we want all our services to have access to this pub/sub.
 
-Put in your access key id and secret and click continue.
+Put in your access key id and secret key and click continue.
 
 ![configure_connection_pub_sub](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/access_key_id.png)
 
