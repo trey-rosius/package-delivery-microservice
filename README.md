@@ -65,14 +65,14 @@ https://github.com/trey-rosius/package-delivery-microservice/assets/29162353/de1
 
 ![solutions-architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/solutions_architecture.svg)
 
-## Project Description
-
 ## Prerequisites And Assumptions
 
-Before proceeding, please ensure that you have these prerequisites installed on your computer.
+Before proceeding, please ensure that you have these prerequisites installed.
 
 - Python 3.8+(Python 3.10 is preferable)
 - Vscode or Pycharm(Preferably)
+
+I'm also assuming you already have a valid Catalyst Acccount. If you don't yet have one, joined the [Catalyst early Access](https://pages.diagrid.io/catalyst-early-access-waitlist)
 
 ### Installing Diagrid Catalyst
 
@@ -98,7 +98,7 @@ https://mongodb.com/
 
 Once you've created a mongo db account, create a new project with any name of your choice. I'll name mine `package_delivery`.
 
-Once created, click on the project name and proceed to the next screen(`Clusters`).
+Once created, click on the project name and proceed to the next screen.(`Clusters`).
 
 On the far right corner of the `Clusters` screen, click on `Create` to create a new cluster. See screenshot below.
 
@@ -113,6 +113,8 @@ Next, give your instance a familiar name and then click on `Create Instance`.
 ![serverless-instance](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/instance_name.png)
 
 Bear in mind that you can also choose to use a shared free instance for this workshop. I used a serverless instance because i had already ran out of the free tier.
+
+You'll need to input your credit card details before creating the serverless instance.
 
 ## Secure the database with a username and password
 
@@ -156,15 +158,13 @@ diagrid project use package-delivery-project
 
 Create a new python project in pycharm, and set python version of the `venv` environment to `3.10`.
 
-The project should have a default `main.py` file and a `requirements.txt` file. Add those, if your project doesn't already have them.
+The project should have a `main.py` file and a `requirements.txt` file for dependencies.
 
-Let's proceed to creating `app ids` and `states` before returning to scaffold our project.
+## Microservice
 
-## Package Delivery Microservices
+For this application, we'll have 6 services, each of which corresponds to a Catalyst `App ID` as illustrated in the image below.
 
-For this application, we'll have 5 services, each of which corresponds to a Catalyst `App ID` as illustrated in the image below.
-
-![catalyst_app_ids](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/catalyst_app_id.png)
+![catalyst_app_ids](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/catalyst_app_ids.png)
 
 You can read more about Catalyst Application Identities here
 https://docs.diagrid.io/catalyst/concepts/appids
