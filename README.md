@@ -47,6 +47,7 @@ The working Graphql API and how to deploy it can be found [here](https://github.
 ## Frontend Application
 
 [Github](https://github.com/trey-rosius/Package-Delivery-Mobile-App)
+
 I've built a barebones mobile application to visually illustrate how to consume the GraphQL endpoint. Also, I illustrate the realtime aspect of the api, by showing a location marker moving along a polyline, across a map.
 Package location(longitude and latitude) updates are done every 5 seconds.
 
@@ -58,7 +59,7 @@ Package Estimated time of arrival(ETA) can be calculated from Distance Left
 
 https://github.com/trey-rosius/package-delivery-microservice/assets/29162353/de1bd1c6-e943-404c-b4de-3dc88d6a94fd
 
-The repository can be found here, with screenshots and a video of how it works.
+![high-level-overview](https://raw.githubusercontent.com/trey-rosius/Package-Delivery-Mobile-App/master/assets/images/package_details.png)
 
 ## Solutions architecture.
 
