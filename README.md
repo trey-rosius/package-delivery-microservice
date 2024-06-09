@@ -688,6 +688,10 @@ The next service we'll create is the `package-service`.
 
 ## Package Service
 
+## Solutions Architecture
+
+![Deliver-agent-account-created](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/package_service_arch.png)
+
 The Package Service is responsible for all package activities within the system such as
 
 1. Creating a new package
@@ -710,7 +714,7 @@ We'll start by creating an app ID called `package-service`. You can either use t
 
 `diagrid appid create package-service`
 
-The next step is to create the package pickup event. This event simply notifies subscribers of the fact that, a package needs to be picked up and assigned a delivery agent.
+The next step is to create the package pickup request event. This event simply notifies subscribers of the fact that, a package needs to be picked up and assigned a delivery agent.
 
 ![package_pickup_request_event](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/package_pickup_request_event.png)
 
@@ -776,6 +780,8 @@ Within the `package-service` folder, create the `models` folder and `package_mod
 
 This file contains the pydantic package model class with package fields.
 
+Here's a code snippet of the contents of the `package_model.py` file.
+
 ```py
 class PackageModel(BaseModel):
     id: str
@@ -791,8 +797,6 @@ class PackageModel(BaseModel):
     createdAt: int
     updatedAt: Optional[int] =None
 ```
-
-As mentioned above, get the complete code from the github repository.
 
 ### Create Package Endpoint
 
@@ -815,7 +819,7 @@ def create_package(package_model: PackageModel):
             raise HTTPException(status_code=500, detail=err.details())
 ```
 
-In another variation of such an application, you might want to publish a `package-created` event and do something with the information. But for this workshop, we won't do that.
+In another variation of such an application, you might want to publish a `package-created` event and do something with the event. But for this workshop, we won't be doing do that.
 
 ## Exercise
 
@@ -828,7 +832,8 @@ To test your knowledge and understanding of everything we've covered so far, wri
 ### Package Pickup Endpoint
 
 `@app.get('/v1.0/publish/packages/send/{package_id}')`
-This endpoint is executed when a user demands their package be picked up by a delivery agent.
+This endpoint is executed when a user(Customer) needs their package to be picked up by a delivery agent.
+
 Inside this funciton, 3 things happen.
 
 1. Firstly, we get the package id and retrieve the entire package item
@@ -838,7 +843,7 @@ Inside this funciton, 3 things happen.
    package_model = PackageModel(**json.loads(kv.data))
 ```
 
-2. Secondly, we update the package status from `PENDING` to `PICK_UP_REQUEST` and save.
+2. Secondly, we update the package status from `PENDING` to `PICK_UP_REQUEST` and then save.
 
 ```py
   # update package status
@@ -866,10 +871,16 @@ Inside this funciton, 3 things happen.
             )
 ```
 
+![package_pickup_request_event](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/package_pickup_request_event.png)
+
 If you notice, we could easily use a workflow to orchestrate these activities.
 
-Maybe you'll love to redo this endpoint as a workflow as an exercise.
+Maybe you'll love to redo this endpoint as a workflow, for an exercise.
 
 ## Pickup Service
 
-The next service is the pickup service
+## Solutions Architecture
+
+![pickup_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/pickup_service.png)
+
+The next service is the pickup service. This service is invoked by the `package-pickup-request` event.
