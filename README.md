@@ -712,6 +712,8 @@ We'll start by creating an app ID called `package-service`. You can either use t
 
 The next step is to create the package pickup event. This event simply notifies subscribers of the fact that, a package needs to be picked up and assigned a delivery agent.
 
+![package_pickup_request_event](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/package_pickup_request_event.png)
+
 We'll look more into the consequence of this event, when we'll be talking about the `pickup-service`.
 
 Run the following command to create `package-pickup-event` with attached subscribers that happen to be the `notification-service` and `pickup-service`.
@@ -770,11 +772,9 @@ The `package-service` app is listening on port `5002`. The `user-service` app wa
 
 Create another folder within your project and name it `package-service`. So now there's the `user-service` folder and a `package-service` folder in your project folder.
 
-Within the `package-service` folder, create a folder called `models`.
+Within the `package-service` folder, create the `models` folder and `package_model.py` file within it .
 
-Create a `package_model.py` file within the models folder.
-
-This file contains the package model class with package fields.
+This file contains the pydantic package model class with package fields.
 
 ```py
 class PackageModel(BaseModel):
