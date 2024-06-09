@@ -50,9 +50,6 @@ The working Graphql API and how to deploy it can be found [here](https://github.
 I've built a barebones mobile application to visually illustrate how to consume the GraphQL endpoint. Also, i try to illustrate the realtime aspect of the api, by showing a location marker folloing a polyline, moving across a map.
 Package location(longitude and latitude) updates are done every 5 seconds.
 
-PL == Package Location(updates based on package movement)
-DL == Destination Location(Never updates)
-
 ```
 Destination location - Package location = Distance Left
 ```
