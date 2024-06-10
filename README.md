@@ -895,6 +895,10 @@ The package status is set to `ASSIGNED`.
 
 This record has to be persisted in the package state store. This functionality can't be done inside the `pickup-service`. We don't share state. So we send an event alongside the updated package payload back to the package service and it does the update.
 
+Remember to create the `pickup-service` app id if you haven't already done that.
+
+Create a new `pickup-service` folder in your local project and add the `main.py` and `requirements.py` alongside the dependencies.
+
 ```py
 @app.post('/v1.0/subscribe/packages/pickup')
 async def pickup_package_event(event: CloudEvent):
@@ -951,4 +955,25 @@ async def pickup_package_event(event: CloudEvent):
 
 ## Solutions Architecture
 
-![pickup_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_service_arch.png)
+![deliver_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_service_arch.png)
+
+This service is responsible for handling the delivery aspect of the API.
+
+Aspects such as
+
+- Continued location updates as the package is being delivered.
+- Package dropped off.
+
+Assuming you've already created a `delivery-service` app id. And initialized the project within your IDE.
+
+## Package Movement Endpoint
+
+`@app.post('/v1.0/publish/delivery-service/movement')`
+
+This is one of the most important endpoints in this api. It updates the location of the package as it's being delivered.
+
+Using AWS AppSync's subscriptions we'll provide updates in realtime to the frontend application for a visual representation of the package's movement.
+
+Also, an event(`delivery_status_update`) is sent each time the location is updated.
+
+![deliver_status_event](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_status_event.png)
