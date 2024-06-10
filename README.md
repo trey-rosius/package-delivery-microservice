@@ -1023,3 +1023,36 @@ The endpoint is (`/v1.0/publish/delivery-service/drop-off`).
 ### Solutions Architecture
 
 ![payment_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/payment_service_arch.png)
+
+Before proceeding, ensure you have a stripe account. Create one if you don't own one yet. We'll be needing the secret key `sk_........`for this section.
+
+We'll implement payments using [Dapr Workflows](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-overview/). They are durable, fault tolerant and support long running tasks, ideal for orchestrating activities within the payment service.
+
+Speaking of activities, there are 3
+
+1. Create Payment Intent: This activity sends a Stripe Payment intent to a customer, requesting them to approve a transaction. This would be the first activity within the payment service.
+
+2. Send Notification: This activity is responsible for sending different types of events such as
+
+- Timeout event
+- Approved Event
+- Cancelled Event
+  to downstream services.
+
+3. Error Handler: This activity catches and prints the errors thrown by the workflow.
+
+## Deploying and Testing
+
+Get the complete code from the github repository and deploy. Each Service has it's own docker config file. So you can deploy independently.
+
+For testing, i took the liberty to outline all the endpoints in a clean manner for easy identification.
+
+![endpoints](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/endpoints.png)
+
+Access the endpoints using this link
+
+[POSTMAN PACKAGE DELIVERY MICROSERVICE API](https://www.postman.com/interstellar-meteor-47008/workspace/package-delivery/collection/332577-a5ebcb8b-cb46-49e7-949d-ebcdd81f9d0c?action=share&creator=332577&active-environment=332577-ed2e62fa-f264-4c40-9394-817dd4926f78)
+
+Don't forget to set the environment variables
+
+![env_variables](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/env_variable.png)

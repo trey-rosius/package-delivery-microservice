@@ -117,7 +117,7 @@ def payment_workflow(ctx: wf.DaprWorkflowContext, wf_input: any):
                                         })
 
             approval_result = yield approval_task
-            if approval_result["approval"]:
+            if approval_result["approval"]  :
                 yield ctx.call_activity(send_notification_activity,
                                         input={
                                             "payment_intent_id": payment_intent_response['payment_intent_id'],
