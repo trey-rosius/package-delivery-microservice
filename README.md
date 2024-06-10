@@ -977,3 +977,45 @@ Using AWS AppSync's subscriptions we'll provide updates in realtime to the front
 Also, an event(`delivery_status_update`) is sent each time the location is updated.
 
 ![deliver_status_event](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/delivery_status_event.png)
+
+```py
+
+@app.post('/v1.0/publish/delivery-service/movement')
+def package_movement_update(delivery_status_model: DeliveryStatusModel):
+    with DaprClient() as d:
+        logging.info(f'package id is:{delivery_status_model.packageId}')
+
+        try:
+
+            d.save_state(store_name=delivery_db,
+                         key=delivery_status_model.packageId,
+                         value=delivery_status_model.model_dump_json(),
+                         state_metadata={"contentType": "application/json"})
+            delivery_data = {
+                "id": delivery_status_model.packageId
+            }
+
+            d.publish_event(
+                pubsub_name=pubsub_name,
+                topic_name=del_status_update_topic_name,
+                data=json.dumps(delivery_data),
+                data_content_type='application/json',
+            )
+
+            return delivery_status_model.model_dump()
+        except grpc.RpcError as err:
+            print(f"Error={err.details()}")
+            raise HTTPException(status_code=500, detail=err.details())
+
+```
+
+## Exercise
+
+After handing the package at it's destination, the delivery agent has to confirm `package drop-off`.
+This involves updating both the delivery and package status.
+
+For an exercise try doing this endpoint and comparing your answer with the result in the github repo.
+
+The endpoint is (`/v1.0/publish/delivery-service/drop-off`).
+
+## Payment
