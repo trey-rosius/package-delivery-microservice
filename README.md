@@ -1019,3 +1019,7 @@ For an exercise try doing this endpoint and comparing your answer with the resul
 The endpoint is (`/v1.0/publish/delivery-service/drop-off`).
 
 ## Payment
+
+### Solutions Architecture
+
+![payment_service_architecture](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/payment_service_arch.png)
