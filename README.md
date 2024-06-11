@@ -1056,3 +1056,13 @@ Access the endpoints using this link
 Don't forget to set the environment variables
 
 ![env_variables](https://raw.githubusercontent.com/trey-rosius/package-delivery-microservice/master/assets/env_variable.png)
+
+## Appsync Endpoint
+
+You can easily deploy and test the appsync application. All instructions are on the readme file in the [github_repository](https://github.com/trey-rosius/cdk-package-delivery-microservice)
+
+Here's the Graphql Endpoint
+
+https://3clidexd65h2ri2ppl7d3jf6ii.appsync-api.us-east-2.amazonaws.com/graphql
+
+You'll need to create an AWS Cognito User
