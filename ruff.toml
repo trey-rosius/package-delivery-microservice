@@ -1,0 +1,6 @@
+ignore = [
+    "E501",#Line too long ({width} > {limit} characters)
+    "F541" #f-string without any placeholders
+     ]
+# Exclude files and directories
+exclude = ["docs", ".eggs", "setup.py", "example", ".git", "dist", ".md", ".yaml", ".txt", ".ini","venv"]

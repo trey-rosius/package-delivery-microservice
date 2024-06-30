@@ -14,7 +14,7 @@ delivery_agent_account_created_topic = os.getenv('DAPR_DELIVER_AGENT_ACCOUNT_CRE
 user_deleted_topic_name = os.getenv('DAPR_USER_ACCOUNT_DELETED_TOPIC_NAME', '')
 
 app = FastAPI()
-client = StripeClient("sk_test_o5XBQtVklHa7okPAhm5Ey61C00T7DHjBgB")
+
 logging.basicConfig(level=logging.INFO)
 
 
