@@ -34,6 +34,7 @@ def confirm_payment_intent(payment_intent: str):
     with DaprClient() as d:
 
         print(f'payment intent: Received input: {payment_intent}.')
+
         try:
             kv = d.get_state(payments_db, payment_intent)
             print(f"value of kv is {kv.data}")
@@ -117,7 +118,7 @@ def payment_workflow(ctx: wf.DaprWorkflowContext, wf_input: any):
                                         })
 
             approval_result = yield approval_task
-            if approval_result["approval"]  :
+            if approval_result["approval"]:
                 yield ctx.call_activity(send_notification_activity,
                                         input={
                                             "payment_intent_id": payment_intent_response['payment_intent_id'],
