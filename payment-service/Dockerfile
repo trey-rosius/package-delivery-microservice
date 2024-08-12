@@ -17,7 +17,7 @@ ENV DAPR_APP_ID=payment-service
 ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
 ENV STRIPE_SECRET_KEY=sk_test_o5XBQtVklHa7okPAhm5Ey61C00T7DHjBgB
 ENV DAPR_PAYMENTS_COLLECTION=paymentsdb
-ENV DAPR_PUB_SUB=awssqs
+ENV DAPR_PUB_SUB=pub-sub-broker
 ENV DAPR_GRPC_ENDPOINT=https://grpc-prj139416.api.cloud.diagrid.io:443
 ENV DAPR_HTTP_ENDPOINT=https://http-prj139416.api.cloud.diagrid.io
 

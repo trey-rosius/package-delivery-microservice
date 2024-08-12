@@ -18,7 +18,7 @@ ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
 ENV DAPR_DELIVERIES_COLLECTION=deliverydb
 ENV DAPR_DELIVERY_STATUS_UPDATE_TOPIC_NAME=delivery-status-update
 ENV DAPR_PACKAGE_DROP_OFF_TOPIC_NAME=package-drop-off
-ENV DAPR_PUB_SUB=awssqs
+ENV DAPR_PUB_SUB=pub-sub-broker
 ENV DAPR_GRPC_ENDPOINT=https://grpc-prj139416.api.cloud.diagrid.io:443
 ENV DAPR_HTTP_ENDPOINT=https://http-prj139416.api.cloud.diagrid.io
 

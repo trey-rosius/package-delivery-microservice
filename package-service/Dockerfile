@@ -15,7 +15,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV DAPR_API_TOKEN=diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/package-service/3cbd6ae7-dad4-49c9-ab89-c726b6b042da
 ENV DAPR_APP_ID=package-service
 ENV DAPR_PACKAGES_DB=packagesdb
-ENV DAPR_PUB_SUB=awssqs
+ENV DAPR_PUB_SUB=pub-sub-broker
 ENV DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
 ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
 ENV DAPR_GRPC_ENDPOINT=https://grpc-prj139416.api.cloud.diagrid.io:443

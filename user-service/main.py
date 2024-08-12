@@ -5,7 +5,6 @@ from dapr.clients import DaprClient
 from fastapi import FastAPI, HTTPException
 import logging
 import os
-from stripe import StripeClient, StripeError
 from models.user_model import UserModel, UserType, DELIVER_AGENT_STATUS, PaymentModel
 
 user_db = os.getenv('DAPR_USER_DB', '')

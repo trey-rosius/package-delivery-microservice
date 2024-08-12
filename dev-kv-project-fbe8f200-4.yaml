@@ -7,7 +7,7 @@ apps:
     DAPR_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/package-service/3cbd6ae7-dad4-49c9-ab89-c726b6b042da
     DAPR_APP_ID: package-service
     DAPR_PACKAGES_DB: packagesdb
-    DAPR_PUB_SUB: awssqs
+    DAPR_PUB_SUB: pub-sub-broker
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
@@ -26,7 +26,7 @@ apps:
     DAPR_APP_ID: user-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_USER_DB: usersdb
-    DAPR_PUB_SUB: awssqs
+    DAPR_PUB_SUB: pub-sub-broker
     DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
@@ -44,7 +44,7 @@ apps:
     DAPR_TARGET_APP_ID: user-service
     DAPR_TARGET_API_TOKEN: diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/139416/kv-project-fbe8f200-4/user-service/c4f7e75e-b149-4ffd-852b-7ee716924d3e
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
-    DAPR_PUB_SUB: awssqs
+    DAPR_PUB_SUB: pub-sub-broker
     DAPR_PACKAGE_PICKUP_TOPIC_NAME: package-pickup-request
     DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME: assign-package-request
     DAPR_DELIVER_AGENT_ACCOUNT_CREATED_TOPIC_NAME: delivery-agent-account-created
@@ -81,7 +81,7 @@ apps:
     DAPR_DELIVERIES_COLLECTION: deliverydb
     DAPR_DELIVERY_STATUS_UPDATE_TOPIC_NAME: delivery-status-update
     DAPR_PACKAGE_DROP_OFF_TOPIC_NAME: package-drop-off
-    DAPR_PUB_SUB: awssqs
+    DAPR_PUB_SUB: pub-sub-broker
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io
   workDir: delivery-service
@@ -98,7 +98,7 @@ apps:
     DAPR_APP_ID: payment-service
     DAPR_CLIENT_TIMEOUT_SECONDS: 10
     DAPR_PAYMENTS_COLLECTION: paymentsdb
-    DAPR_PUB_SUB: awssqs
+    DAPR_PUB_SUB: pub-sub-broker
     STRIPE_SECRET_KEY: sk_test_o5XBQtVklHa7okPAhm5Ey61C00T7DHjBgB
     DAPR_GRPC_ENDPOINT: https://grpc-prj139416.api.cloud.diagrid.io:443
     DAPR_HTTP_ENDPOINT: https://http-prj139416.api.cloud.diagrid.io

@@ -15,7 +15,7 @@ app = FastAPI()
 delivery_db = os.getenv('DAPR_DELIVERIES_COLLECTION', '')
 del_status_update_topic_name = os.getenv('DAPR_DELIVERY_STATUS_UPDATE_TOPIC_NAME', '')
 package_drop_off_topic_name = os.getenv('DAPR_PACKAGE_DROP_OFF_TOPIC_NAME', '')
-pubsub_name = os.getenv('DAPR_PUB_SUB', 'awssqs')
+pubsub_name = os.getenv('DAPR_PUB_SUB', '')
 logging.basicConfig(level=logging.INFO)
 
 
