@@ -36,7 +36,7 @@ For synchronous communication between services, we will employ the Dapr request/
 
 Additionally, we will orchestrate payments within the API using Dapr Workflows.
 
-Each microservice will correspond to a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Service (ECS).
+Each microservice will correspond to a Catalyst App ID and will be independently deployed to AWS AppRunner using Docker and AWS Elastic Container Registry (ECR).
 
 Finally, we'll implement a Graphql API using AWS AppSync with JavaScript Resolvers, Cognito, and AWS WAF (Web Application Firewall).
 
