@@ -3,7 +3,7 @@ name: Deploy the CDK Infrastructure and Build the Catalyst Service Images
 on:
   push:
     branches:
-        - main
+        - master
 
 jobs:
   run-cicd:
