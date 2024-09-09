@@ -52,7 +52,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+          aws-region: us-east-2
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -62,7 +62,7 @@ jobs:
         run: |
           for service in ./services/*/ ; do
             service_name=$(basename "$service")
-            ecr_repo="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$service_name"
+            ecr_repo="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-2.amazonaws.com/$service_name"
             echo "Building Docker image for $service_name"
             docker build -t "$ecr_repo:latest" "$service"
             echo "Pushing Docker image to ECR for $service_name"
