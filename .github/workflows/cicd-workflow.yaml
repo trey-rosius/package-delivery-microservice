@@ -93,7 +93,7 @@ jobs:
             fi
             echo "ALB DNS: $alb_dns"
             # Update Diagrid App ID with the ALB DNS and other required parameters
-            diagrid appid update $service_name \
+            diagrid appid update $service \
               --app-endpoint "http://$alb_dns" \
               --api-key "${{ secrets.DIAGRID_API_KEY }}" \
               --project "${{ secrets.DIAGRID_PROJECT_NAME }}"
