@@ -70,7 +70,7 @@ jobs:
           done
 
 
-      - name: Deploy CdkInfraStack to AWS
+      - name: Deploy cdk-infrastructure to AWS
         run: cdk deploy PackageDeliveryMicroserviceStack --require-approval=never
         working-directory: ./cdk-infrastructure
 

@@ -17,6 +17,10 @@ pubsub_name = os.getenv('DAPR_PUB_SUB', '')
 topic_name = os.getenv('DAPR_PACKAGE_PICKUP_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
+@app.get('/')
+def health_check():
+    return {"Health is Ok"}
+
 
 @app.post('/v1.0/state/packages')
 def create_package(package_model: PackageModel):

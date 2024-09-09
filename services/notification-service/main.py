@@ -22,6 +22,9 @@ class CloudEvent(BaseModel):
     type: str
     traceid: str
 
+@app.get('/')
+def health_check():
+    return {"Health is Ok"}
 
 @app.post('/v1.0/subscribe/packages/pickup')
 def receive_package_pickup_event(event: CloudEvent):

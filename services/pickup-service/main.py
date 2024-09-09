@@ -16,6 +16,9 @@ target_api_token = os.getenv('DAPR_TARGET_API_TOKEN', '')
 topic_name = os.getenv('DAPR_ASSIGN_PACKAGE_REQUEST_TOPIC_NAME', '')
 logging.basicConfig(level=logging.INFO)
 
+@app.get('/')
+def health_check():
+    return {"Health is Ok"}
 
 @app.post('/v1.0/subscribe/packages/pickup')
 async def pickup_package_event(event: CloudEvent):

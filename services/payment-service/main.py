@@ -27,6 +27,9 @@ wfr = wf.WorkflowRuntime()
 wf_client = wf.DaprWorkflowClient()
 wfr.start()
 
+@app.get('/')
+def health_check():
+    return {"Health is Ok"}
 
 @app.post('/v1.0/payments/{payment_intent}/confirm')
 def confirm_payment_intent(payment_intent: str):

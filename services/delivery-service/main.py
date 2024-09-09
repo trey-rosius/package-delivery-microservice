@@ -30,6 +30,9 @@ class CloudEvent(BaseModel):
     tracestate: str
     type: str
     traceid: str
+@app.get('/')
+def health_check():
+    return {"Health is Ok"}
 
 
 @app.post('/v1.0/publish/delivery-service/drop-off')
