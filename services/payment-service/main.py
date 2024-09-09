@@ -23,7 +23,6 @@ stripe_secret = os.getenv('STRIPE_SECRET_KEY', '')
 logging.basicConfig(level=logging.INFO)
 
 client = StripeClient(stripe_secret)
-logging.basicConfig(level=logging.INFO)
 wfr = wf.WorkflowRuntime()
 wf_client = wf.DaprWorkflowClient()
 wfr.start()
@@ -94,6 +93,7 @@ def cancel_payment_intent(payment_intent: str):
 
 @app.post('/v1.0/payment')
 def initiate_payment(payment: PaymentModel):
+
     instance_id = wf_client.schedule_new_workflow(workflow=payment_workflow, input=payment.model_dump())
 
     wf_client.wait_for_workflow_completion(instance_id, timeout_in_seconds=300)

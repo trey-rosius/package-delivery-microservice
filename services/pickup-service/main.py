@@ -28,6 +28,7 @@ async def pickup_package_event(event: CloudEvent):
         # assign package to available delivery guy.
         headers = {'dapr-app-id': target_app_id, 'dapr-api-token': target_api_token,
                    'content-type': 'application/json'}
+        #request/response
         try:
             result = requests.get(
                 url='%s/v1.0/invoke/users' % base_url,
