@@ -88,15 +88,15 @@ jobs:
             alb_name=$(basename "$service")-ALB
             alb_dns=$(aws elbv2 describe-load-balancers --names $alb_name --query "LoadBalancers[0].DNSName" --output text)
             if [ -z "$alb_dns" ]; then
-              echo "ALB DNS not found for $service_name"
+              echo "ALB DNS not found for $service"
               exit 1
             fi
             echo "ALB DNS: $alb_dns"
             # Update Diagrid App ID with the ALB DNS and other required parameters
             diagrid appid update $service \
-              --app-endpoint "http://$alb_dns" \
+              --app-endpoint "http://user-service-ALB-835517443.us-east-2.elb.amazonaws.com" \
               --api-key "${{ secrets.DIAGRID_API_KEY }}" \
-              --project "${{ secrets.DIAGRID_PROJECT_NAME }}"
+              --project "${{ secrets.DIAGRID_PROJECT }}"
           
           done
 
