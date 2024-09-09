@@ -93,10 +93,7 @@ jobs:
             fi
             echo "ALB DNS: $alb_dns"
             # Update Diagrid App ID with the ALB DNS and other required parameters
-            diagrid appid update $service \
-              --app-endpoint "http://user-service-ALB-835517443.us-east-2.elb.amazonaws.com" \
-              --api-key "${{ secrets.DIAGRID_API_KEY }}" \
-              --project "${{ secrets.DIAGRID_PROJECT }}"
+            diagrid appid update user-service  --app-endpoint "http://user-service-ALB-835517443.us-east-2.elb.amazonaws.com"  --api-key "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc0FwaUtleSI6dHJ1ZSwiaHR0cHM6Ly9kaWFncmlkLmlvL29yZ0lkIjoiYTY1N2NiMTUtOWFhNi00YmZkLWIzYzYtNjFlNzZhMTczY2ZiIiwiaHR0cHM6Ly9kaWFncmlkLmlvL2VtYWlsIjoidHJleXJvc2l1c0BnbWFpbC5jb20iLCJodHRwczovL2RpYWdyaWQuaW8vb3JnX2E2NTdjYjE1LTlhYTYtNGJmZC1iM2M2LTYxZTc2YTE3M2NmYi9yb2xlcyI6WyJjcmEuZGlhZ3JpZDphZG1pbiJdLCJpYXQiOjE3MjU1NjM5MzUsImF1ZCI6InVybjphZG1pbmdyaWQiLCJpc3MiOiJkaWFncmlkLmlvIiwic3ViIjoidHJleSIsImp0aSI6ImMwamc4ZTJ0bmVmbWZmMG9yeTI4cGwifQ.TL552N1u3IJHKbA_DN6_YuqE0VY6szLCna635GlgIZU" --project kv-project-fbe8f200-4
           
           done
 
